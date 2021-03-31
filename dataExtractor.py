@@ -1,6 +1,7 @@
 import torch
 from torch.utils.data import DataLoader
-import panda as pd
+import pandas as pd
+import numpy as np 
 
 class TrajDataSet():
 	"""
@@ -29,8 +30,12 @@ class TrajDataSet():
 
 #Création du dataset
 data = pd.read_csv("trips_SV_2008_2015.csv")
-traj_data = np.array([])
+traj_data = []
+traj_idx = data.trip[0]
+i=0
+while i<len(data) and data.trip[i]== traj_idx:
+    traj_data.append([data.lon[i],data.lat[i],data.step_speed[i],data.step_direction[i]])
+    i+=1
+traj_data_np = np.array(traj_data)
 
-for i in data:
-	traj_data[]
 
