@@ -1,4 +1,5 @@
 import torch
+from torch.utils.data import DataLoader
 import panda as pd
 
 class TrajDataSet():
@@ -24,3 +25,12 @@ class TrajDataSet():
 		This function return the idx-th pairs state/action of the array as a tensor. 
 		"""
 		return torch.from_numpy(self.array[idx])
+
+
+#Création du dataset
+data = pd.read_csv("trips_SV_2008_2015.csv")
+traj_data = np.array([])
+
+for i in data:
+	traj_data[]
+
