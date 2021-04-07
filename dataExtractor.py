@@ -16,7 +16,7 @@ class TrajDataSet(torch.utils.data.Dataset):
 
 		"""
 		data = pd.read_csv(file_name)
-		self.traj = np.array([[data.lon,data.lat,data.step_speed,data.step_direction])
+		self.traj = np.array([data.lon,data.lat,data.step_speed,data.step_direction])
 		#Je ne suis pas très sûr des données à mettre dedans, on va tester avec ça.  
 
 
