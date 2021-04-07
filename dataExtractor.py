@@ -3,7 +3,7 @@ from torch.utils.data import DataLoader
 import pandas as pd
 import numpy as np 
 
-class TrajDataSet(torch.utils.data.DataSet):
+class TrajDataSet(torch.utils.data.Dataset):
 	"""
 	This class create our dataSet for our network. We will then create a DataLoader via this dataset so as to 
 	train our network.
