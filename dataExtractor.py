@@ -1,5 +1,4 @@
 import torch
-from torch.utils.data import DataLoader
 import pandas as pd
 import numpy as np 
 
@@ -17,7 +16,7 @@ class TrajDataSet(torch.utils.data.Dataset):
 		"""
 		data = pd.read_csv(file_name)
 		self.traj = np.array([data.lon,data.lat,data.step_speed,data.step_direction])
-		#Je ne suis pas très sûr des données à mettre dedans, on va tester avec ça.  
+
 
 
 	def __len__(self):
@@ -28,7 +27,7 @@ class TrajDataSet(torch.utils.data.Dataset):
 		This function return the idx-th pairs state/action of the array as a tensor. 
 		"""
 		return (torch.from_numpy(self.traj[idx][:2]),torch.from_numpy(self.traj[idx][2:])) #We output a tuple of tensor (state,action)
-
+		#I've got an unexpected error where torch.from_numpy is not recognized by my python interpreter (in VisualCode), don't know why. 
 
 #Création du dataset
 #data = pd.read_csv("trips_SV_2008_2015.csv")
