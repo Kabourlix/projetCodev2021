@@ -6,25 +6,28 @@ import matplotlib.pyplot as plt
 from Code_Reseau import BehavioralCloning
 from dataExtractor import TrajDataSet
 
-#Importation des données
-set = TrajDataSet("trips_SV_2008_2015.csv")
-loader = torch.utils.data.DataLoader(set,batch_size=16,shuffle=True)
-a,b,c,d = next(iter(loader))
-states = (a,b)
-exp_actions = (c,d)
+#Init. dataset and dataloader
+data_set = TrajDataSet("trips_SV_2008_2015.csv")
+
+loader = torch.utils.data.DataLoader(data_set,batch_size=16,shuffle=True)
+
+state,action = next(iter(loader)) #Here we got our tensors. 
+state_dim = state.__len__()
+action_dim = action.__len__()
 
 # Initialisation des variables
 learning_parameter = 0.01
 epochs = 150
-model = BehavioralCloning(set.__len__(),set.__len__())
+model = BehavioralCloning(state_dim, action_dim)
 criterion = nn.MSELoss()
 optimizer = optimizer = torch.optim.SGD(model.parameters(), learning_parameter)
 
 # Boucle d'entraînement
 history = []
 for epoch in range(epochs):
-    inputs = Variable(torch.from_numpy(states))
-    labels = Variable(torch.from_numpy(exp_actions))
+    #I'm not sur of this code, here state and action and tensors, we may not need a torch.from_numpy. 
+    inputs = Variable(torch.from_numpy(state))
+    labels = Variable(torch.from_numpy(action))
     optimizer.zero_grad()
     outputs = model(inputs)
     loss = criterion(outputs, labels)
@@ -38,18 +41,14 @@ print(b)
 
 # Test de la régression
 with torch.no_grad():
-    predicted = model(Variable(torch.from_numpy(states))).data.numpy()
+    predicted = model(Variable(torch.from_numpy(x_train))).data.numpy()
     print(predicted)
 
 plt.clf()
-plt.plot(states, exp_actions, 'go', label = 'True data', alpha =0.5)
-plt.plot(states, predicted, '--', label = 'Predictions', alpha = 0.5)
+plt.plot(x_train, y_train, 'go', label = 'True data', alpha =0.5)
+plt.plot(x_train, predicted, '--', label = 'Predictions', alpha = 0.5)
 plt.legend(loc='best')
 plt.show()
-
-
-
-#En dessous : autre solution pour la régression mais moins compréhensible
 
 #def evaluate(model, val_loader):
 #    outputs = [model.validation_step(batch) for batch in val_loader]
