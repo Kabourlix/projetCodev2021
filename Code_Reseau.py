@@ -1,6 +1,4 @@
-import pytorch
 import torch
-import torchvision
 import torch.nn as nn
 import matplotlib.pyplot as plt
 
@@ -15,6 +13,9 @@ class BehavioralCloning(nn.Module):
     def forward(self,x):
         # On renvoie simplement la transformation linéaire du tenseur état en entrée
         return self.linear(x)
+
+
+# En dessous : autre solution pour l'architecture du réseau mais moins compréhensible
 
 #    def training_step(self,batch):
 #        # Création d'une action et calcul de la perte associée
