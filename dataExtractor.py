@@ -20,14 +20,14 @@ class TrajDataSet(torch.utils.data.Dataset):
 		#Je ne suis pas très sûr des données à mettre dedans, on va tester avec ça.  
 
 
-	def __len__():
+	def __len__(self):
 		return len(self.traj)
 
-	def __getitem__(idx):
+	def __getitem__(self,idx):
 		"""
 		This function return the idx-th pairs state/action of the array as a tensor. 
 		"""
-		return torch.from_numpy(self.traj[idx])
+		return (torch.from_numpy(self.traj[idx][:2]),torch.from_numpy(self.traj[idx][2:])) #We output a tuple of tensor (state,action)
 
 
 #Création du dataset
