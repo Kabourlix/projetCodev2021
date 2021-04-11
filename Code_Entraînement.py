@@ -11,7 +11,7 @@ data_set = TrajDataSet("trips_SV_2008_2015.csv")
 
 loader = torch.utils.data.DataLoader(data_set,batch_size=16,shuffle=True)
 
-state,action = next(iter(loader)) #Here we got our tensors. 
+state,action = next(iter(loader)) #Here we got our tensors.
 state_dim = state.__len__()
 action_dim = action.__len__()
 
@@ -25,9 +25,8 @@ optimizer = optimizer = torch.optim.SGD(model.parameters(), learning_parameter)
 # Boucle d'entraînement
 history = []
 for epoch in range(epochs):
-    #I'm not sur of this code, here state and action and tensors, we may not need a torch.from_numpy. 
-    inputs = Variable(torch.from_numpy(state))
-    labels = Variable(torch.from_numpy(action))
+    inputs = Variable(state)
+    labels = Variable(action)
     optimizer.zero_grad()
     outputs = model(inputs)
     loss = criterion(outputs, labels)
