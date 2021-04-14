@@ -7,11 +7,12 @@ from Code_Reseau import BehavioralCloning
 from dataExtractor import TrajDataSet
 
 #Init. dataset and dataloader
-data_set = TrajDataSet("trips_SV_2008_2015.csv")
+train_set = TrajDataSet("trips_SV_2008_2015.csv")
+validation_set = # à compléter
+train_loader = torch.utils.data.DataLoader(data_set,batch_size=16,shuffle=True)
+validation_loader = # à compléter
 
-loader = torch.utils.data.DataLoader(data_set,batch_size=16,shuffle=True)
-
-state,action = next(iter(loader)) #Here we got our tensors.
+state,action = next(iter(loader)) #Here we got our tensors. inutile puisque seulement dans la boucle non ?
 state_dim = len(state)
 action_dim = len(action)
 
@@ -27,16 +28,27 @@ optimizer = optimizer = torch.optim.SGD(model.parameters(), learning_parameter)
 history = []
 for epoch in range(epochs):
     print(f'We are at epoch {epoch}')
-    for batch,(state,action) in enumerate(loader):
-        inputs = Variable(state.float())
-        labels = Variable(action.float())
-        optimizer.zero_grad()
-        outputs = model(inputs)
-        loss = criterion(outputs, labels)
-        history.append(loss.item())
-        loss.backward()
-        optimizer.step()
+    if epoch%10 = 0: # On regarde le comportement du réseau sur les données de test toutes les 10 epochs
+        for batch,(state,action) in enumerate(validation_loader):
+            inputs = Variable(state.float())
+            labels = Variable(action.float())
+            optimizer.zero_grad()
+            outputs = model(inputs)
+            loss = criterion(outputs, labels)
+            history.append(loss.item())
+            # pas d'optimisation ici
+    else :
+        for batch,(state,action) in enumerate(train_loader):
+            inputs = Variable(state.float())
+            labels = Variable(action.float())
+            optimizer.zero_grad()
+            outputs = model(inputs)
+            loss = criterion(outputs, labels)
+            history.append(loss.item())
+            loss.backward()
+            optimizer.step()
     #Add a condition to test the test-data-set (not used for training, only evaluation)
+    # condition d'arrêt si overfitting ?
 
 [w,b] = model.parameters()
 print(w)
