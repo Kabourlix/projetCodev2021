@@ -12,12 +12,13 @@ data_set = TrajDataSet("trips_SV_2008_2015.csv")
 loader = torch.utils.data.DataLoader(data_set,batch_size=16,shuffle=True)
 
 state,action = next(iter(loader)) #Here we got our tensors.
-state_dim = state.__len__()
-action_dim = action.__len__()
+state_dim = len(state)
+action_dim = len(action)
+
 
 # Initialisation des variables
 learning_parameter = 0.01
-epochs = 150
+epochs = 10
 model = BehavioralCloning(state_dim, action_dim)
 criterion = nn.MSELoss()
 optimizer = optimizer = torch.optim.SGD(model.parameters(), learning_parameter)
@@ -25,27 +26,30 @@ optimizer = optimizer = torch.optim.SGD(model.parameters(), learning_parameter)
 # Boucle d'entraînement
 history = []
 for epoch in range(epochs):
-    inputs = Variable(state)
-    labels = Variable(action)
-    optimizer.zero_grad()
-    outputs = model(inputs)
-    loss = criterion(outputs, labels)
-    history.append(loss.item())
-    loss.backward()
-    optimizer.step()
+    print(f'We are at epoch {epoch}')
+    for batch,(state,action) in enumerate(loader):
+        inputs = Variable(state.float())
+        labels = Variable(action.float())
+        optimizer.zero_grad()
+        outputs = model(inputs)
+        loss = criterion(outputs, labels)
+        history.append(loss.item())
+        loss.backward()
+        optimizer.step()
+    #Add a condition to test the test-data-set (not used for training, only evaluation)
 
 [w,b] = model.parameters()
 print(w)
 print(b)
 
 # Test de la régression
-with torch.no_grad():
-    predicted = model(Variable(torch.from_numpy(x_train))).data.numpy()
-    print(predicted)
+# with torch.no_grad():
+#     predicted = model(Variable(torch.from_numpy(state))).data.numpy()
+#     print(predicted)
 
 plt.clf()
-plt.plot(x_train, y_train, 'go', label = 'True data', alpha =0.5)
-plt.plot(x_train, predicted, '--', label = 'Predictions', alpha = 0.5)
+plt.plot(state, action, 'go', label = 'True data', alpha =0.5)
+#plt.plot(state, predicted, '--', label = 'Predictions', alpha = 0.5)
 plt.legend(loc='best')
 plt.show()
 

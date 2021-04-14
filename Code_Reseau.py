@@ -8,7 +8,7 @@ class BehavioralCloning(nn.Module):
     def __init__(self,state_dim,action_dim):
         # Notre réseau n'a qu'une seule couche linéaire
         super(BehavioralCloning,self).__init__()
-        self.linear = nn.Linear(state_dim,action_dim)
+        self.linear = nn.Linear(2,2) #Modif au pif : à vérifier. 
 
     def forward(self,x):
         # On renvoie simplement la transformation linéaire du tenseur état en entrée
