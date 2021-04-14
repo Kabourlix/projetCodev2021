@@ -32,24 +32,20 @@ class DataAdjust():
 	This class enables to deal with our data. 
 	"""
 	def __init__(self,file_name,label_name = 'trip',drop_label = ['dive','prediction'],method=pd.read_csv):
+		#Import the data in dataFrame.
 		self.data = method(file_name) #Init our data frame.
 		self.data.drop(drop_label,axis=1) #We delete the useless columns for our work. 
 		
+		#Label series (in our context it is the trips' names.)
 		self.label = self.data[label_name] #Init our label serie
-		self.label.drop_duplicates(keep='first',inplace=True)
-		
+		self.label.drop_duplicates(keep='first',inplace=True) #Eliminate copies. 
 		self.nb_label = self.label.shape[0] #Ammount of labels
 		
+		#We make the label name an attribute of our class to make it more readable. 
 		self.label_name = label_name
 	
 	def select_random_traj(self):
 		"""
-		Parameters
-		----------
-		label_name : str, optional
-			This is the label of the column we want to take our data on. 
-			At default, this is set on 'trip' which is associated to our dataset. 
-
 		Returns
 		-------
 		pandas.dataFrame
@@ -59,6 +55,16 @@ class DataAdjust():
 		return self.data[self.data[self.label_name] == self.label.sample().iloc[0]]
 	
 	def subset_data(self,first_ammount):
+		"""
+		Parameters
+		-------
+		first_ammount : int. This is the ammount of trajectories you want int he first dataframe to extract. 
+
+		Returns 
+		------
+		data_1 : pandas.dataFrame. This is a random substract of the our dataframe containing first_ammount of trajectories.
+		data_2 : pandas.dataFrame. Another one with total-first_ammount trajectories. 
+		"""
 		extract_labels = self.label.sample(first_ammount)
 		mask = self.data[self.label_name].isin(extract_labels)
 		data_1 = self.data[mask]
