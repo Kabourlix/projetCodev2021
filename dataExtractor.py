@@ -27,6 +27,19 @@ class TrajDataSet(torch.utils.data.Dataset):
 		return (torch.from_numpy(self.traj[idx][:2]),torch.from_numpy(self.traj[idx][2:])) #We output a tuple of tensor (state,action)
 		#I've got an unexpected error where torch.from_numpy is not recognized by my python interpreter (in VisualCode), don't know why. 
 
+######## Séparation du jeu de données #########
+data = TrajDataSet('trips_SV_2008_2015') #Import dataset
+
+#Create trip labels
+trip_label = data['trip']
+trip_label.drop_duplicates(keep='first',inplace=True)
+nb_label = trip_label.shape()[0]
+
+def select_random_traj(dataSet, )
+ 
+
+
+
 #Création du dataset
 #data = pd.read_csv("trips_SV_2008_2015.csv")
 #traj_data = []
