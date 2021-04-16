@@ -1,16 +1,18 @@
-import torch
 import numpy as np
+import torch
 import torch.nn as nn
 from torch.autograd import Variable
 import matplotlib.pyplot as plt
 from Code_Reseau import BehavioralCloning
-from dataExtractor import TrajDataSet
+from dataExtractor import TrajDataSet, DataAdjust
 
-#Init. dataset and dataloader
-train_set = TrajDataSet("trips_SV_2008_2015.csv")
-validation_set = # à compléter
-train_loader = torch.utils.data.DataLoader(data_set,batch_size=16,shuffle=True)
-validation_loader = # à compléter
+#Init. datasets and dataloaders
+frame = DataAdjust("trips_SV_2008_2015.csv")
+train_d, test_d = frame.subset_data(45)
+train_set = TrajDataSet(train_d)
+test_set = TrajDataSet(test_d)
+train_loader = torch.utils.data.DataLoader(train_set,batch_size=16,shuffle=True)
+test_loader = torch.utils.data.DataLoader(test_set,batch_size=16,shuffle=True)
 
 state,action = next(iter(loader)) #Here we got our tensors. inutile puisque seulement dans la boucle non ?
 state_dim = len(state)
@@ -29,7 +31,7 @@ history = []
 for epoch in range(epochs):
     print(f'We are at epoch {epoch}')
     if epoch%10 = 0: # On regarde le comportement du réseau sur les données de test toutes les 10 epochs
-        for batch,(state,action) in enumerate(validation_loader):
+        for batch,(state,action) in enumerate(test_loader):
             inputs = Variable(state.float())
             labels = Variable(action.float())
             optimizer.zero_grad()
