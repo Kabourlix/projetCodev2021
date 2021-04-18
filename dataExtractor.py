@@ -71,6 +71,8 @@ class DataAdjust():
 		data_2 = self.data[~mask]
 		return (data_1,data_2)
 
+global personnal_data = DataAdjust('trips_SV_2008_2015.csv') #Global variable to extract once our data in a dataFrame. 
+
 # ######## Séparation du jeu de données #########
 # data = TrajDataSet('trips_SV_2008_2015') #Import dataset
 
