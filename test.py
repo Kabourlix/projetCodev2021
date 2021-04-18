@@ -42,6 +42,9 @@ for iteration in range(time_step-1):
 
 trajectory = np.array(trajectory)
 plt.plot(trajectory[:,0],trajectory[:,1])
+plt.xlabel("x")
+plt.ylabel("y")
+plt.savefig("trained_traj.png")
 
 
 
