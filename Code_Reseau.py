@@ -1,6 +1,4 @@
-import torch
 import torch.nn as nn
-import matplotlib.pyplot as plt
 
 # Création de la classe BehavioralCloning pour le modèle de régression linéaire
 class BehavioralCloning(nn.Module):

@@ -14,9 +14,8 @@ test_set = TrajDataSet(test_d)
 train_loader = torch.utils.data.DataLoader(train_set,batch_size=16,shuffle=True)
 test_loader = torch.utils.data.DataLoader(test_set,batch_size=16,shuffle=True)
 
-state,action = next(iter(loader)) #Here we got our tensors. inutile puisque seulement dans la boucle non ?
-state_dim = len(state)
-action_dim = len(action)
+state_dim = 2600
+action_dim = 2600
 
 
 # Initialisation des variables
@@ -30,15 +29,16 @@ optimizer = optimizer = torch.optim.SGD(model.parameters(), learning_parameter)
 history = []
 for epoch in range(epochs):
     print(f'We are at epoch {epoch}')
-    if epoch%10 = 0: # On regarde le comportement du réseau sur les données de test toutes les 10 epochs
-        for batch,(state,action) in enumerate(test_loader):
-            inputs = Variable(state.float())
-            labels = Variable(action.float())
-            optimizer.zero_grad()
-            outputs = model(inputs)
-            loss = criterion(outputs, labels)
-            history.append(loss.item())
-            # pas d'optimisation ici
+    if epoch%10 == 0: # On regarde le comportement du réseau sur les données de test toutes les 10 epochs
+        with torch.no_grad():
+            for batch,(state,action) in enumerate(test_loader):
+                inputs = Variable(state.float())
+                labels = Variable(action.float())
+                optimizer.zero_grad()
+                outputs = model(inputs)
+                loss = criterion(outputs, labels)
+                history.append(loss.item())
+                # pas d'optimisation ici
     else :
         for batch,(state,action) in enumerate(train_loader):
             inputs = Variable(state.float())
@@ -61,11 +61,11 @@ print(b)
 #     predicted = model(Variable(torch.from_numpy(state))).data.numpy()
 #     print(predicted)
 
-plt.clf()
-plt.plot(state, action, 'go', label = 'True data', alpha =0.5)
+#plt.clf()
+#plt.plot(state, action, 'go', label = 'True data', alpha =0.5)
 #plt.plot(state, predicted, '--', label = 'Predictions', alpha = 0.5)
-plt.legend(loc='best')
-plt.show()
+#plt.legend(loc='best')
+#plt.show()
 
 #def evaluate(model, val_loader):
 #    outputs = [model.validation_step(batch) for batch in val_loader]
