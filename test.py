@@ -5,6 +5,7 @@ import torch
 import dataExtractor as extr
 import Code_Reseau as network
 
+personnal_data = extr.DataAdjust('trips_SV_2008_2015.csv')
 
 """
 The aim is to test our network by outputing a trajectory.
@@ -24,20 +25,23 @@ action_dim = len(action)
 model = network.BehavioralCloning(state_dim,action_dim)
 time_step = 400 #à modifier (longueur de la trajectoire, nb de pas)
 
-trajectory = [state.numpy()] #It got the initial state
+trajectory = [state.numpy()[0]] #It got the initial state
 
 for iteration in range(time_step-1):
-    next_action = model.forward(state) # Get the next action
-    ac_np = next_action.numpy() # [r,theta] Transform to numpy for manipulation
+    next_action = model.forward(state.float()) # Get the next action
+    ac_np = next_action.detach().numpy() # [r,theta] Transform to numpy for manipulation
     next_state = state.numpy() #Prepare the next state in numpy for manipulation
-    mult = ac_np[0]*[np.cos(ac_np[1]),np.sin(ac_np[1])] # [r cos(theta),r sin(theta)]
+    #For lisibility
+    r = ac_np[0][0]
+    theta = ac_np[0][1]
+    ######################
+    mult = r*np.array([np.cos(theta),np.sin(theta)]) # [r cos(theta),r sin(theta)]
     next_state += mult #Calculate next state. 
-    trajectory.append(next_state.copy()) #Add it to the trajectory list
-    state = next_state.from_numpy() # Modify state value for next loop
+    trajectory.append(next_state[0].copy()) #Add it to the trajectory list
+    state = torch.from_numpy(next_state) # Modify state value for next loop
 
-time = [i for i in range(time_step)]
-
-plt.plot(time,trajectory)
+trajectory = np.array(trajectory)
+plt.plot(trajectory[:,0],trajectory[:,1])
 
 
 
