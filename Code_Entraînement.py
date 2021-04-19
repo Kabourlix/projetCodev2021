@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from Code_Reseau import BehavioralCloning
 from dataExtractor import TrajDataSet, DataAdjust
 
+
 #Init. datasets and dataloaders
 frame = DataAdjust("trips_SV_2008_2015.csv")
 train_d, test_d = frame.subset_data(45)
@@ -13,6 +14,10 @@ train_set = TrajDataSet(train_d)
 test_set = TrajDataSet(test_d)
 train_loader = torch.utils.data.DataLoader(train_set,batch_size=16,shuffle=True)
 test_loader = torch.utils.data.DataLoader(test_set,batch_size=16,shuffle=True)
+
+def perso_export():
+    return test_d
+
 
 state_dim = 2600
 action_dim = 2600

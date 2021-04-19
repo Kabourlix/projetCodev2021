@@ -44,7 +44,7 @@ class DataAdjust():
 		#We make the label name an attribute of our class to make it more readable. 
 		self.label_name = label_name
 
-	def select_random_traj(self):
+	def select_random_traj(self): #! Problem : we want to select a random trajectory from the untrained data
 		"""
 		Returns
 		-------
@@ -53,6 +53,8 @@ class DataAdjust():
 
 		"""
 		return self.data[self.data[self.label_name] == self.label.sample().iloc[0]]
+		#return selected_data[selected_data[self.label_name] == self.label.sample().iloc[0]]
+		#TODO : Adjust this so as to make the selected traj in the test one. 
 	
 	def subset_data(self,first_ammount):
 		"""
@@ -67,8 +69,8 @@ class DataAdjust():
 		"""
 		extract_labels = self.label.sample(first_ammount)
 		mask = self.data[self.label_name].isin(extract_labels)
-		data_1 = self.data[mask]
-		data_2 = self.data[~mask]
+		data_1 = self.data[mask].copy()
+		data_2 = self.data[~mask].copy()
 		return (data_1,data_2)
 
 personnal_data = DataAdjust('trips_SV_2008_2015.csv') #Global variable to extract once our data in a dataFrame. 

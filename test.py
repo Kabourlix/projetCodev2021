@@ -13,19 +13,20 @@ We provide an initial coordonate and then we get he next move for x iterations
 where x is the lenght of the expert trajectory associated
 """
 #Importing one random trajectory to plot it
-traj_data = personnal_data.select_random_traj()
+traj_data = personnal_data.select_random_traj() #TODO : Modify this line later when it would be edited in dataExtractor.py 
 traj_dataset = extr.TrajDataSet(traj_data)
 traj_data_loader = torch.utils.data.DataLoader(traj_dataset,batch_size=1,shuffle=False)
 
 #Parameters of the simulation
 
 state,action = next(iter(traj_data_loader)) #Here we got our tensors. inutile puisque seulement dans la boucle non ?
-state_dim = len(state)
+state_dim = len(state) #! Here state and action are (2,1) it is juste coordinates : must be checked. 
 action_dim = len(action)
 model = network.BehavioralCloning(state_dim,action_dim)
-time_step = 400 #à modifier (longueur de la trajectoire, nb de pas)
+time_step = traj_dataset.traj.shape[0]
 
 trajectory = [state.numpy()[0]] #It got the initial state
+
 
 for iteration in range(time_step-1):
     next_action = model.forward(state.float()) # Get the next action
@@ -40,13 +41,15 @@ for iteration in range(time_step-1):
     trajectory.append(next_state[0].copy()) #Add it to the trajectory list
     state = torch.from_numpy(next_state) # Modify state value for next loop
 
+
+
+################ Printing trajectories ######################################
 trajectory = np.array(trajectory)
+expert_traj = traj_dataset.traj[:,0:2]
+
 plt.plot(trajectory[:,0],trajectory[:,1])
+plt.plot(expert_traj[:,0],expert_traj[:,1],color='red') #! It prints strange stuff : it doesn't seem to work properly
 plt.xlabel("x")
 plt.ylabel("y")
 plt.savefig("trained_traj.png")
-
-
-
-##############################
-
+#############################################################################
