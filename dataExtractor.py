@@ -34,16 +34,16 @@ class DataAdjust():
 	def __init__(self,file_name,label_name = 'trip',drop_label = ['dive','prediction'],method=pd.read_csv):
 		#Import the data in dataFrame.
 		self.data = method(file_name) #Init our data frame.
-		self.data.drop(drop_label,axis=1) #We delete the useless columns for our work. 
+		self.data.drop(drop_label,axis=1,inplace=True) #We delete the useless columns for our work. 
 		
 		#Label series (in our context it is the trips' names.)
-		self.label = self.data[label_name] #Init our label serie
+		self.label = self.data.loc[:,label_name].copy() #Init our label serie
 		self.label.drop_duplicates(keep='first',inplace=True) #Eliminate copies. 
 		self.nb_label = self.label.shape[0] #Ammount of labels
 		
 		#We make the label name an attribute of our class to make it more readable. 
 		self.label_name = label_name
-	
+
 	def select_random_traj(self):
 		"""
 		Returns
