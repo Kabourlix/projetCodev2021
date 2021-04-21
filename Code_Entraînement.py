@@ -17,14 +17,14 @@ test_loader = torch.utils.data.DataLoader(test_set,batch_size=16,shuffle=True)
 
 def perso_export():
     return test_d
-
+colony_tensor = torch.from_numpy(np.array([77.264,-11.773])) #Colony coordinate to normalize data
 
 state_dim = 2600
 action_dim = 2600
 
 
 # Initialisation des variables
-learning_parameter = 0.01
+learning_parameter = 0.0001
 epochs = 10
 model = BehavioralCloning(state_dim, action_dim)
 criterion = nn.MSELoss()
@@ -38,7 +38,7 @@ for epoch in range(epochs):
         model.eval()
         with torch.no_grad():
             for batch,(state,action) in enumerate(test_loader):
-                inputs = Variable(state.float())
+                inputs = Variable((state-colony_tensor).float())
                 labels = Variable(action.float())
                 optimizer.zero_grad()
                 outputs = model(inputs)
@@ -48,7 +48,7 @@ for epoch in range(epochs):
     else :
         model.train()
         for batch,(state,action) in enumerate(train_loader):
-            inputs = Variable(state.float())
+            inputs = Variable((state-colony_tensor).float())
             labels = Variable(action.float())
             optimizer.zero_grad()
             outputs = model(inputs) #! The issue is here. 
