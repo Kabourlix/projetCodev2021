@@ -25,7 +25,7 @@ action_dim = 2600
 
 # Initialisation des variables
 learning_parameter = 0.0001
-epochs = 10
+epochs = 100
 model = BehavioralCloning(state_dim, action_dim)
 criterion = nn.MSELoss()
 optimizer = optimizer = torch.optim.SGD(model.parameters(), learning_parameter)
@@ -38,7 +38,7 @@ for epoch in range(epochs):
         model.eval()
         with torch.no_grad():
             for batch,(state,action) in enumerate(test_loader):
-                inputs = Variable((state-colony_tensor).float())
+                inputs = Variable(state.float())
                 labels = Variable(action.float())
                 optimizer.zero_grad()
                 outputs = model(inputs)
@@ -48,7 +48,7 @@ for epoch in range(epochs):
     else :
         model.train()
         for batch,(state,action) in enumerate(train_loader):
-            inputs = Variable((state-colony_tensor).float())
+            inputs = Variable(state.float())
             labels = Variable(action.float())
             optimizer.zero_grad()
             outputs = model(inputs) #! The issue is here. 
@@ -56,7 +56,7 @@ for epoch in range(epochs):
             history.append(loss.item())
             loss.backward()
             optimizer.step()
-        print(f"inputs = {inputs} ; label = {labels} ; outputs = {outputs} ; loss = {loss}")
+        #print(f"inputs = {inputs} ; label = {labels} ; outputs = {outputs} ; loss = {loss}")
     #Add a condition to test the test-data-set (not used for training, only evaluation)
     # condition d'arrêt si overfitting ?
 
