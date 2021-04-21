@@ -24,7 +24,7 @@ action_dim = 2600
 
 
 # Initialisation des variables
-learning_parameter = 0.01
+learning_parameter = 0.0001
 epochs = 10
 model = BehavioralCloning(state_dim, action_dim)
 criterion = nn.MSELoss()
@@ -51,7 +51,8 @@ for epoch in range(epochs):
             inputs = Variable(state.float())
             labels = Variable(action.float())
             optimizer.zero_grad()
-            outputs = model(inputs) #! The issue is here. 
+            outputs = model(inputs) #! The issue is here :
+            # gradients may be exploding because of two potential things : a too high l.p. or unnormalized inputs
             loss = criterion(outputs, labels)
             history.append(loss.item())
             loss.backward()
