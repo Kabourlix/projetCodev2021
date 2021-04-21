@@ -46,10 +46,13 @@ for iteration in range(time_step-1):
 ################ Printing trajectories ######################################
 trajectory = np.array(trajectory)
 expert_traj = traj_dataset.traj[:,0:2]
-
+plt.subplot(211)
 plt.plot(trajectory[:,0],trajectory[:,1])
+
+plt.ylabel("y_trained")
+plt.subplot(212)
 plt.plot(expert_traj[:,0],expert_traj[:,1],color='red') #! It prints strange stuff : it doesn't seem to work properly
 plt.xlabel("x")
-plt.ylabel("y")
+plt.ylabel("y_expert")
 plt.savefig("trained_traj.png")
 #############################################################################

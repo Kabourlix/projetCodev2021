@@ -43,6 +43,9 @@ class DataAdjust():
 		
 		#We make the label name an attribute of our class to make it more readable. 
 		self.label_name = label_name
+		
+	def temp(self):
+		return self.data
 
 	def select_random_traj(self): #! Problem : we want to select a random trajectory from the untrained data
 		"""

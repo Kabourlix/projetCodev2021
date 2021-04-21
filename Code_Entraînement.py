@@ -35,6 +35,7 @@ history = []
 for epoch in range(epochs):
     print(f'We are at epoch {epoch}')
     if epoch%10 == 0: # On regarde le comportement du réseau sur les données de test toutes les 10 epochs
+        model.eval()
         with torch.no_grad():
             for batch,(state,action) in enumerate(test_loader):
                 inputs = Variable(state.float())
@@ -45,15 +46,17 @@ for epoch in range(epochs):
                 history.append(loss.item())
                 # pas d'optimisation ici
     else :
+        model.train()
         for batch,(state,action) in enumerate(train_loader):
             inputs = Variable(state.float())
             labels = Variable(action.float())
             optimizer.zero_grad()
-            outputs = model(inputs)
+            outputs = model(inputs) #! The issue is here. 
             loss = criterion(outputs, labels)
             history.append(loss.item())
             loss.backward()
             optimizer.step()
+        print(f"inputs = {inputs} ; label = {labels} ; outputs = {outputs} ; loss = {loss}")
     #Add a condition to test the test-data-set (not used for training, only evaluation)
     # condition d'arrêt si overfitting ?
 
