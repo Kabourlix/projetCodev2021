@@ -25,14 +25,15 @@ action_dim = 2600
 
 # Initialisation des variables
 learning_parameter = 0.0001
-epochs = 20
+epochs = 5
 model = BehavioralCloning(state_dim, action_dim)
 criterion = nn.MSELoss()
 optimizer = optimizer = torch.optim.SGD(model.parameters(), learning_parameter)
 
 # Boucle d'entraînement
 history = []
-losses = []
+train_losses = []
+test_losses = []
 for epoch in range(epochs):
     print(f'We are at epoch {epoch}')
     if epoch%10 == 0: # On regarde le comportement du réseau sur les données de test toutes les 10 epochs
@@ -46,7 +47,7 @@ for epoch in range(epochs):
                 loss = criterion(outputs, labels)
                 history.append(loss.item())
                 # pas d'optimisation ici
-            losses.append(loss.item())
+            test_losses.append(loss.item())
     else :
         model.train()
         for batch,(state,action) in enumerate(train_loader):
@@ -60,7 +61,7 @@ for epoch in range(epochs):
             loss.backward()
             optimizer.step()
             # condition d'arrêt si overfitting ?
-        losses.append(loss.item())
+        train_losses.append(loss.item())
 
 ############################## Printing results ############################
 # Printing the model parameters
@@ -69,13 +70,12 @@ print(w)
 print(b)
 # Printing the evolution of the loss
 plt.clf()
-x = [i for i in range(len(losses))]
-y = [loss for loss in losses]
-plt.plot(x,y)
+x = [i for i in range(len(train_losses))]
+y_train = [loss for loss in train_losses]
+y_test = [loss for loss in test_losses]
+plt.plot(x,y_train)
 plt.xlabel("epoch")
-plt.ylabel("loss")
-plt.title("Evolution of the loss")
-plt.savefig("Loss_Evolution.png")
+#plt.savefig("Loss_Evolution.png")
 
 # Test de la régression
 # with torch.no_grad():
