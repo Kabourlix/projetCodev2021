@@ -72,8 +72,8 @@ plt.clf()
 x = [i for i in range(len(losses))]
 y = [loss for loss in losses]
 plt.plot(x,y)
-plt.xlabel("loss")
-plt.ylabel("epoch")
+plt.xlabel("epoch")
+plt.ylabel("loss")
 plt.title("Evolution of the loss")
 plt.savefig("Loss_Evolution.png")
 
