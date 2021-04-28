@@ -80,4 +80,5 @@ def plot_traj():
 	plt.xlabel("x")
 	plt.ylabel("y_expert")
 	plt.savefig("trained_traj.png")
+	plt.show()
 #############################################################################
