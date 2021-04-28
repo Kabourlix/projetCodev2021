@@ -9,7 +9,8 @@ class BehavioralCloning(nn.Module):
     # Definition of the network
     def __init__(self, state_dim, action_dim):
         super(BehavioralCloning,self).__init__() # Here we only use a single linear layer
-        self.linear = nn.Linear(2,2) # The tensor dimensions have to match
+        self.linear = nn.Sequential(nn.Linear(2,100),nn.Linear(100,100),nn.Linear(100,2)) # The tensor dimensions have to match
+
 
     # Choice of the operations within our network
     def forward(self,x):

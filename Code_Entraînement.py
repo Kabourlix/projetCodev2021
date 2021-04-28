@@ -66,17 +66,21 @@ for epoch in range(epochs):
 ################################   RESULTS   ######################################
 
 # Printing the model parameters
-[w,b] = model.parameters()
-print(w)
-print(b)
+print(model.parameters())
+#print(w)
+#print(b)
 # Printing the evolution of the loss
 plt.clf()
 x = [i for i in range(len(train_losses))]
 y_train = [loss for loss in train_losses]
 y_test = [loss for loss in test_losses]
+plt.subplot(211)
 plt.plot(x,y_train)
+plt.subplot(212)
+plt.plot(x,y_test)
 plt.xlabel("epoch")
-#plt.savefig("Loss_Evolution.png")
+plt.show()
+plt.savefig("Loss_Evolution.png")
 
 #################   OTHER SOLUTION FOR THIS LINEAR REGRESSION   #################
 
