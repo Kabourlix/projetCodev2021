@@ -7,7 +7,7 @@ def save_np_array(array,labels,file_name):
         array : np.array
             numpy array containing data.
         labels : array of str
-            Contains the name of the coloumn of our arrays.
+            Contains the name of the column of our arrays.
         file_name : str
             Name of the file to create and save. 
     Outputs.
