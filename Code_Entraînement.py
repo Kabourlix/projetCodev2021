@@ -23,8 +23,8 @@ def perso_export():
 
 state_dim = 2600
 action_dim = 2600
-learning_parameter = 0.0001 # We want to keep it small to prevent gradient explosions
-epochs = 5 # Number of episodes
+learning_parameter = 0.00001 # We want to keep it small to prevent gradient explosions
+epochs = 20 # Number of episodes
 model = BehavioralCloning(state_dim, action_dim) # Importation of the network
 criterion = nn.MSELoss() # Here we choose a Mean Squared Error to compute our loss
 optimizer = torch.optim.SGD(model.parameters(), learning_parameter) # We use the Stochastic Gradient Descent from PyTorch to optimize our network
@@ -36,7 +36,7 @@ train_losses = [] # This one will store the losses of each training epoch
 test_losses = [] # This one will store the losses of the testing epochs, every ten training epoch
 for epoch in range(epochs):
     print(f'We are at epoch {epoch}')
-    if epoch%10 == 0: # Every ten training epoch, we look the behavior of our network on the testing loader
+    if epoch%5 == 0: # Every ten training epoch, we look the behavior of our network on the testing loader
         model.eval()
         with torch.no_grad():
             for batch,(state,action) in enumerate(test_loader):
@@ -67,17 +67,19 @@ for epoch in range(epochs):
 
 # Printing the model parameters
 print(model.parameters())
+print(test_losses)
 #print(w)
 #print(b)
 # Printing the evolution of the loss
 plt.clf()
-x = [i for i in range(len(train_losses))]
+x_train = [i for i in range(len(train_losses))]
 y_train = [loss for loss in train_losses]
+x_test = [i for i in range(len(test_losses))]
 y_test = [loss for loss in test_losses]
 plt.subplot(211)
-plt.plot(x,y_train)
+plt.plot(x_train,y_train)
 plt.subplot(212)
-plt.plot(x,y_test)
+plt.plot(x_test,y_test)
 plt.xlabel("epoch")
 plt.show()
 plt.savefig("Loss_Evolution.png")
