@@ -30,7 +30,7 @@ class TrajDataSet(torch.utils.data.Dataset):
 		ad_y = self.col_cord[1]*np.ones(len(self.traj[idx][:2]))
 		ad = np.array([ad_x,ad_y]).transpose()
 		norm = np.linalg.norm(self.col_cord) #!This modification alter the tensor shape i nthe train. To check
-		return (torch.from_numpy((self.traj[idx][:2]-ad)/norm),torch.from_numpy(self.traj[idx][2:])) #We output a tuple of tensor (state,action)
+		return (torch.from_numpy((self.traj[idx][:2]-self.col_cord)/norm),torch.from_numpy(self.traj[idx][2:])) #We output a tuple of tensor (state,action)
 		#I've got an unexpected error where torch.from_numpy is not recognized by my python interpreter (in VisualCode), don't know why. 
 
 class DataAdjust():

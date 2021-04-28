@@ -25,7 +25,7 @@ action_dim = 2600
 
 # Initialisation des variables
 learning_parameter = 0.0001
-epochs = 100
+epochs = 2
 model = BehavioralCloning(state_dim, action_dim)
 criterion = nn.MSELoss()
 optimizer = optimizer = torch.optim.SGD(model.parameters(), learning_parameter)

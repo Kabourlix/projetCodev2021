@@ -82,3 +82,6 @@ def plot_traj():
 	plt.savefig("trained_traj.png")
 	plt.show()
 #############################################################################
+for i in range(5):
+	plt.figure()
+	plot_traj()
