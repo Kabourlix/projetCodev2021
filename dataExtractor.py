@@ -16,6 +16,17 @@ class TrajDataSet(torch.utils.data.Dataset):
 
 		"""
 		self.traj = np.array([data.lon,data.lat,data.step_speed,data.step_direction]).transpose()
+		self.col_cord = np.array([77.264,-11.773])
+
+		# Create the adjusting vector to adjust all coordinate of our trajectory, relative to the colony_coord.
+		ad_x = self.col_cord[0]*np.ones(len(self.traj[:][0]))
+		ad_y = self.col_cord[1]*np.ones(len(self.traj[:][1]))
+		#ad = np.array([ad_x,ad_y]).transpose()
+		#norm = np.linalg.norm(self.col_cord) #!This modification alter the tensor shape i nthe train. To check
+		lon = self.traj[:][0]
+		lat = self.traj[:][1]
+		self.ad_lon = (lon-ad_x)/np.std(lon)
+		self.ad_lat = (lat-ad_y)/np.std(lat)
 
 	def __len__(self):
 		return len(self.traj)
@@ -24,8 +35,10 @@ class TrajDataSet(torch.utils.data.Dataset):
 		"""
 		This function return the idx-th pairs state/action of the array as a tensor. 
 		"""
-		return (torch.from_numpy(self.traj[idx][:2]),torch.from_numpy(self.traj[idx][2:])) #We output a tuple of tensor (state,action)
+		
+		return (torch.from_numpy(np.array([self.ad_lon,self.ad_lat]).transpose()[idx]),torch.from_numpy(self.traj[idx][2:])) #We output a tuple of tensor (state,action)
 		#I've got an unexpected error where torch.from_numpy is not recognized by my python interpreter (in VisualCode), don't know why. 
+		#! I get an out of index error by doing this.
 
 class DataAdjust():
 	"""

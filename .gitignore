@@ -1,3 +1,6 @@
 
 .vscode/settings.json
 __pycache__/dataExtractor.cpython-38.pyc
+*.pyc
+*.json
+*.pyc
