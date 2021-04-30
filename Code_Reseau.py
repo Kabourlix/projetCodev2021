@@ -1,22 +1,26 @@
+################################   IMPORTATIONS   #################################
+
 import torch.nn as nn
 
-# Création de la classe BehavioralCloning pour le modèle de régression linéaire
+#######################   CREATION OF THE NEURAL NETWORK   ######################
+
 class BehavioralCloning(nn.Module):
 
-    def __init__(self,state_dim,action_dim):
-        # Notre réseau n'a qu'une seule couche linéaire
-        super(BehavioralCloning,self).__init__()
-        self.linear = nn.Linear(2,2) #Modif au pif : à vérifier. 
+    # Definition of the network
+    def __init__(self, state_dim, action_dim):
+        super(BehavioralCloning,self).__init__() # Here we only use a single linear layer
+        self.linear = nn.Sequential(nn.Linear(2,100),nn.Linear(100,100),nn.Linear(100,2)) # The tensor dimensions have to match
 
+
+    # Choice of the operations within our network
     def forward(self,x):
-        # On renvoie simplement la transformation linéaire du tenseur état en entrée
-        return self.linear(x)
+        return self.linear(x) # We only return the linear transformation of the input tensor
 
 
-# En dessous : autre solution pour l'architecture du réseau mais moins compréhensible
+#################   OTHER SOLUTION FOR THIS LINEAR REGRESSION   #################
 
 #    def training_step(self,batch):
-#        # Création d'une action et calcul de la perte associée
+#        # Creation of an action, computing of the associated loss
 #        states, target_actions = batch
 #        out_actions = self(states)
 #        loss = nn.MSELoss(out_actions,target_actions)

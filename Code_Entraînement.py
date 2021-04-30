@@ -1,4 +1,5 @@
-import numpy as np
+###############################   IMPORTATIONS   ################################
+
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
@@ -6,35 +7,36 @@ import matplotlib.pyplot as plt
 from Code_Reseau import BehavioralCloning
 from dataExtractor import TrajDataSet, DataAdjust
 
+##########   INITIALISATION OF THE DATASETS AND THE DATALOADERS   ############### 
 
-#Init. datasets and dataloaders
-frame = DataAdjust("trips_SV_2008_2015.csv")
+frame = DataAdjust("trips_SV_2008_2015.csv") 
 train_d, test_d = frame.subset_data(45)
-train_set = TrajDataSet(train_d)
-test_set = TrajDataSet(test_d)
-train_loader = torch.utils.data.DataLoader(train_set,batch_size=16,shuffle=True)
-test_loader = torch.utils.data.DataLoader(test_set,batch_size=16,shuffle=True)
+train_set = TrajDataSet(train_d) # Creation of the train set
+test_set = TrajDataSet(test_d) # Creation of the test set
+train_loader = torch.utils.data.DataLoader(train_set,batch_size=16,shuffle=True) # Creation of the train loader
+test_loader = torch.utils.data.DataLoader(test_set,batch_size=16,shuffle=True) # Creation of the test loader
+
+####################   INITIALISATION OF THE VARIABLES   ########################## 
 
 def perso_export():
     return test_d
 
-
 state_dim = 2600
 action_dim = 2600
+learning_parameter = 0.00001 # We want to keep it small to prevent gradient explosions
+epochs = 20 # Number of episodes
+model = BehavioralCloning(state_dim, action_dim) # Importation of the network
+criterion = nn.MSELoss() # Here we choose a Mean Squared Error to compute our loss
+optimizer = torch.optim.SGD(model.parameters(), learning_parameter) # We use the Stochastic Gradient Descent from PyTorch to optimize our network
 
+#####################   TRAINING OF OUR NEURAL NETWORK   #########################
 
-# Initialisation des variables
-learning_parameter = 0.0001
-epochs = 10
-model = BehavioralCloning(state_dim, action_dim)
-criterion = nn.MSELoss()
-optimizer = optimizer = torch.optim.SGD(model.parameters(), learning_parameter)
-
-# Boucle d'entraînement
-history = []
+history = [] # This list will store all of the losses
+train_losses = [] # This one will store the losses of each training epoch
+test_losses = [] # This one will store the losses of the testing epochs, every ten training epoch
 for epoch in range(epochs):
     print(f'We are at epoch {epoch}')
-    if epoch%10 == 0: # On regarde le comportement du réseau sur les données de test toutes les 10 epochs
+    if epoch%5 == 0: # Every ten training epoch, we look the behavior of our network on the testing loader
         model.eval()
         with torch.no_grad():
             for batch,(state,action) in enumerate(test_loader):
@@ -43,38 +45,46 @@ for epoch in range(epochs):
                 optimizer.zero_grad()
                 outputs = model(inputs)
                 loss = criterion(outputs, labels)
+                # We could add a condition here to prevent from overfitting
                 history.append(loss.item())
-                # pas d'optimisation ici
+                # There is no optimisation here, we only look the behavior
+            test_losses.append(loss.item())
     else :
         model.train()
         for batch,(state,action) in enumerate(train_loader):
             inputs = Variable(state.float())
             labels = Variable(action.float())
             optimizer.zero_grad()
-            outputs = model(inputs) #! The issue is here :
-            # gradients may be exploding because of two potential things : a too high l.p. or unnormalized inputs
+            outputs = model(inputs)
+            # Caution : gradients may be exploding because of two potential things : a too high l.p. or unnormalized inputs
             loss = criterion(outputs, labels)
             history.append(loss.item())
             loss.backward()
             optimizer.step()
-        print(f"inputs = {inputs} ; label = {labels} ; outputs = {outputs} ; loss = {loss}")
-    #Add a condition to test the test-data-set (not used for training, only evaluation)
-    # condition d'arrêt si overfitting ?
+        train_losses.append(loss.item())
 
-[w,b] = model.parameters()
-print(w)
-print(b)
+################################   RESULTS   ######################################
 
-# Test de la régression
-# with torch.no_grad():
-#     predicted = model(Variable(torch.from_numpy(state))).data.numpy()
-#     print(predicted)
+# Printing the model parameters
+print(model.parameters())
+print(test_losses)
+#print(w)
+#print(b)
+# Printing the evolution of the loss
+plt.clf()
+x_train = [i for i in range(len(train_losses))]
+y_train = [loss for loss in train_losses]
+x_test = [i for i in range(len(test_losses))]
+y_test = [loss for loss in test_losses]
+plt.subplot(211)
+plt.plot(x_train,y_train)
+plt.subplot(212)
+plt.plot(x_test,y_test)
+plt.xlabel("epoch")
+plt.show()
+plt.savefig("Loss_Evolution.png")
 
-#plt.clf()
-#plt.plot(state, action, 'go', label = 'True data', alpha =0.5)
-#plt.plot(state, predicted, '--', label = 'Predictions', alpha = 0.5)
-#plt.legend(loc='best')
-#plt.show()
+#################   OTHER SOLUTION FOR THIS LINEAR REGRESSION   #################
 
 #def evaluate(model, val_loader):
 #    outputs = [model.validation_step(batch) for batch in val_loader]
