@@ -17,7 +17,7 @@ test_loader = torch.utils.data.DataLoader(test_set,batch_size=16,shuffle=True)
 
 def perso_export():
     return test_d
-
+colony_tensor = torch.from_numpy(np.array([77.264,-11.773])) #Colony coordinate to normalize data
 
 state_dim = 2600
 action_dim = 2600
@@ -25,7 +25,8 @@ action_dim = 2600
 
 # Initialisation des variables
 learning_parameter = 0.0001
-epochs = 10
+epochs = 2
+
 model = BehavioralCloning(state_dim, action_dim)
 criterion = nn.MSELoss()
 optimizer = optimizer = torch.optim.SGD(model.parameters(), learning_parameter)
@@ -57,7 +58,7 @@ for epoch in range(epochs):
             history.append(loss.item())
             loss.backward()
             optimizer.step()
-        print(f"inputs = {inputs} ; label = {labels} ; outputs = {outputs} ; loss = {loss}")
+        #print(f"inputs = {inputs} ; label = {labels} ; outputs = {outputs} ; loss = {loss}")
     #Add a condition to test the test-data-set (not used for training, only evaluation)
     # condition d'arrêt si overfitting ?
 
