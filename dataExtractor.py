@@ -16,7 +16,6 @@ class TrajDataSet(torch.utils.data.Dataset):
 
 		"""
 		self.traj = np.array([data.lon,data.lat,data.step_speed,data.step_direction]).transpose()
-		self.col_cord = np.array([77.264,-11.773])
 
 	def __len__(self):
 		return len(self.traj)
@@ -25,12 +24,7 @@ class TrajDataSet(torch.utils.data.Dataset):
 		"""
 		This function return the idx-th pairs state/action of the array as a tensor. 
 		"""
-		# Create the adjusting vector to adjust all coordinate of our trajectory, relative to the colony_coord.
-		ad_x = self.col_cord[0]*np.ones(len(self.traj[idx][:2]))
-		ad_y = self.col_cord[1]*np.ones(len(self.traj[idx][:2]))
-		ad = np.array([ad_x,ad_y]).transpose()
-		norm = np.linalg.norm(self.col_cord) #!This modification alter the tensor shape i nthe train. To check
-		return (torch.from_numpy((self.traj[idx][:2]-self.col_cord)/norm),torch.from_numpy(self.traj[idx][2:])) #We output a tuple of tensor (state,action)
+		return (torch.from_numpy(self.traj[idx][:2]),torch.from_numpy(self.traj[idx][2:])) #We output a tuple of tensor (state,action)
 		#I've got an unexpected error where torch.from_numpy is not recognized by my python interpreter (in VisualCode), don't know why. 
 
 class DataAdjust():
