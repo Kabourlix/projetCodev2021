@@ -2,6 +2,7 @@
 
 import torch
 import torch.nn as nn
+import torchvision
 from torch.autograd import Variable
 import matplotlib.pyplot as plt
 from Code_Reseau import BehavioralCloning
@@ -11,8 +12,11 @@ from dataExtractor import TrajDataSet, DataAdjust
 
 frame = DataAdjust("trips_SV_2008_2015.csv") 
 train_d, test_d = frame.subset_data(45)
-train_set = TrajDataSet(train_d) # Creation of the train set
-test_set = TrajDataSet(test_d) # Creation of the test set
+m1,std1 = [train_d.lon.mean(),train_d.lat.mean()],[train_d.lon.std(),train_d.lat.std()]
+m2,std2 = [test_d.lon.mean(),test_d.lat.mean()],[test_d.lon.std(),test_d.lat.std()]
+train_set = TrajDataSet(train_d,torchvision.transforms.Normalize(m1,std1)) # Creation of the train set
+test_set = TrajDataSet(test_d) # Creation of the test 
+
 train_loader = torch.utils.data.DataLoader(train_set,batch_size=16,shuffle=True) # Creation of the train loader
 test_loader = torch.utils.data.DataLoader(test_set,batch_size=16,shuffle=True) # Creation of the test loader
 
