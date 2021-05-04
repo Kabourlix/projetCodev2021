@@ -14,6 +14,7 @@ frame = DataAdjust("trips_SV_2008_2015.csv")
 train_d, test_d = frame.subset_data(45)
 m1,std1 = [train_d.lon.mean(),train_d.lat.mean()],[train_d.lon.std(),train_d.lat.std()]
 m2,std2 = [test_d.lon.mean(),test_d.lat.mean()],[test_d.lon.std(),test_d.lat.std()]
+#! Export in csv with pd.datafile.to_csv
 train_set = TrajDataSet(train_d,torchvision.transforms.Normalize(m1,std1)) # Creation of the train set
 test_set = TrajDataSet(test_d,torchvision.transforms.Normalize(m2,std2)) # Creation of the test 
 
@@ -82,8 +83,10 @@ x_test = [i for i in range(len(test_losses))]
 y_test = [loss for loss in test_losses]
 plt.subplot(211)
 plt.plot(x_train,y_train)
+plt.ylabel("Evolution of the train loss")
 plt.subplot(212)
 plt.plot(x_test,y_test)
+plt.ylabel("Evolution of the test loss")
 plt.xlabel("epoch")
 plt.show()
 plt.savefig("Loss_Evolution.png")

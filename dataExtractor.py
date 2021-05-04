@@ -1,10 +1,14 @@
+################################   IMPORTATIONS   #################################
+
 import torch
 import pandas as pd
 import numpy as np 
 
+##########################   CREATION OF OUR DATASET   #################################
+
 class TrajDataSet(torch.utils.data.Dataset):
 	"""
-	This class create our dataSet for our network. We will then create a DataLoader via this dataset so as to 
+	This class creates our dataSet for our network. We will then create a DataLoader via this dataset so as to 
 	train our network.
 	"""
 	def __init__(self,data,transform=None):
@@ -26,6 +30,8 @@ class TrajDataSet(torch.utils.data.Dataset):
 		"""
 		return (torch.from_numpy(self.traj[idx][:2]),torch.from_numpy(self.traj[idx][2:])) #We output a tuple of tensor (state,action)
 		#I've got an unexpected error where torch.from_numpy is not recognized by my python interpreter (in VisualCode), don't know why. 
+
+#######################   MANIPULATION OF OUR DATASET   #################################
 
 class DataAdjust():
 	"""
@@ -80,9 +86,12 @@ class DataAdjust():
 		data_2 = self.data[~mask].copy()
 		return (data_1,data_2)
 
+#######################   FINAL VARIABLE TO DEAL WITH   #################################
+
 personnal_data = DataAdjust('trips_SV_2008_2015.csv') #Global variable to extract once our data in a dataFrame. 
 
-# ######## Séparation du jeu de données #########
+#########################   SLICING OF THE DATASET   #################################
+
 # data = TrajDataSet('trips_SV_2008_2015') #Import dataset
 
 # #Create trip labels

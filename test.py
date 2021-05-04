@@ -1,10 +1,11 @@
+################################   IMPORTATIONS   #################################
+
 import numpy as np 
 import pandas as pd
 import matplotlib.pyplot as plt
 import torch
 import dataExtractor as extr
 import Code_Reseau as network
-
 personnal_data = extr.DataAdjust('trips_SV_2008_2015.csv')
 
 """
@@ -17,16 +18,16 @@ traj_data = personnal_data.select_random_traj() #TODO : Modify this line later w
 traj_dataset = extr.TrajDataSet(traj_data)
 traj_data_loader = torch.utils.data.DataLoader(traj_dataset,batch_size=1,shuffle=False)
 
-#Parameters of the simulation
+######################   INITIALISATION OF THE VARIABLES   #################################
 
 state,action = next(iter(traj_data_loader)) #Here we got our tensors. inutile puisque seulement dans la boucle non ?
 state_dim = len(state) #! Here state and action are (2,1) it is juste coordinates : must be checked. 
 action_dim = len(action)
 model = network.BehavioralCloning(state_dim,action_dim)
 time_step = traj_dataset.traj.shape[0]
-
 trajectory = [state.numpy()[0]] #It got the initial state
 
+####################################   LOOP   ######################################
 
 for iteration in range(time_step-1):
     next_action = model.forward(state.float()) # Get the next action
@@ -41,9 +42,8 @@ for iteration in range(time_step-1):
     trajectory.append(next_state[0].copy()) #Add it to the trajectory list
     state = torch.from_numpy(next_state) # Modify state value for next loop
 
+###########################   PRINTING TRAJECTORIES   ######################################
 
-
-################ Printing trajectories ######################################
 trajectory = np.array(trajectory)
 expert_traj = traj_dataset.traj[:,0:2]
 plt.subplot(211)
@@ -55,4 +55,5 @@ plt.plot(expert_traj[:,0],expert_traj[:,1],color='red') #! It prints strange stu
 plt.xlabel("x")
 plt.ylabel("y_expert")
 plt.savefig("trained_traj.png")
+
 #############################################################################
