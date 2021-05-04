@@ -15,7 +15,7 @@ train_d, test_d = frame.subset_data(45)
 m1,std1 = [train_d.lon.mean(),train_d.lat.mean()],[train_d.lon.std(),train_d.lat.std()]
 m2,std2 = [test_d.lon.mean(),test_d.lat.mean()],[test_d.lon.std(),test_d.lat.std()]
 train_set = TrajDataSet(train_d,torchvision.transforms.Normalize(m1,std1)) # Creation of the train set
-test_set = TrajDataSet(test_d) # Creation of the test 
+test_set = TrajDataSet(test_d,torchvision.transforms.Normalize(m2,std2)) # Creation of the test 
 
 train_loader = torch.utils.data.DataLoader(train_set,batch_size=16,shuffle=True) # Creation of the train loader
 test_loader = torch.utils.data.DataLoader(test_set,batch_size=16,shuffle=True) # Creation of the test loader
