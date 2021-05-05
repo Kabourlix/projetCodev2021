@@ -28,7 +28,7 @@ test_loader = torch.utils.data.DataLoader(test_set,batch_size=16,shuffle=True) #
 state_dim = 2600
 action_dim = 2600
 learning_parameter = 0.00001 # We want to keep it small to prevent gradient explosions
-epochs = 3 # Number of episodes
+epochs = 10 # Number of episodes
 model = BehavioralCloning(state_dim, action_dim) # Importation of the network
 criterion = nn.MSELoss() # Here we choose a Mean Squared Error to compute our loss
 optimizer = torch.optim.SGD(model.parameters(), learning_parameter) # We use the Stochastic Gradient Descent from PyTorch to optimize our network
@@ -56,7 +56,6 @@ for epoch in range(epochs):
     else :
         model.train()
         for batch,(state,action) in enumerate(train_loader):
-            print(f'The current state is {state}.')
             inputs = Variable(state.float())
             labels = Variable(action.float())
             optimizer.zero_grad()
@@ -89,9 +88,8 @@ plt.plot(x_test,y_test)
 plt.ylabel("Test loss")
 plt.xlabel("epoch")
 plt.suptitle("Evolution of our losses")
+plt.savefig("img/firstLinearNetwork/Loss_Evolution.png")
 plt.show()
-plt.savefig("Loss_Evolution.png")
-
 #################   OTHER SOLUTION FOR THIS LINEAR REGRESSION   #################
 
 #def evaluate(model, val_loader):
