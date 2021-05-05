@@ -12,11 +12,12 @@ from dataExtractor import TrajDataSet, DataAdjust
 
 frame = DataAdjust("trips_SV_2008_2015.csv") 
 train_d, test_d = frame.subset_data(45)
-m1,std1 = [train_d.lon.mean(),train_d.lat.mean()],[train_d.lon.std(),train_d.lat.std()]
-m2,std2 = [test_d.lon.mean(),test_d.lat.mean()],[test_d.lon.std(),test_d.lat.std()]
+std1 = [train_d.lon.std(),train_d.lat.std()]
+std2 = [test_d.lon.std(),test_d.lat.std()]
+col_coord = [-77.264,-11.773]
 #! Export in csv with pd.datafile.to_csv
-train_set = TrajDataSet(train_d,torchvision.transforms.Normalize(m1,std1)) # Creation of the train set
-test_set = TrajDataSet(test_d,torchvision.transforms.Normalize(m2,std2)) # Creation of the test 
+train_set = TrajDataSet(train_d,torchvision.transforms.Normalize(col_coord,std1)) # Creation of the train set
+test_set = TrajDataSet(test_d,torchvision.transforms.Normalize(col_coord,std2)) # Creation of the test 
 
 train_loader = torch.utils.data.DataLoader(train_set,batch_size=16,shuffle=True) # Creation of the train loader
 test_loader = torch.utils.data.DataLoader(test_set,batch_size=16,shuffle=True) # Creation of the test loader
@@ -29,7 +30,7 @@ def perso_export():
 state_dim = 2600
 action_dim = 2600
 learning_parameter = 0.00001 # We want to keep it small to prevent gradient explosions
-epochs = 20 # Number of episodes
+epochs = 3 # Number of episodes
 model = BehavioralCloning(state_dim, action_dim) # Importation of the network
 criterion = nn.MSELoss() # Here we choose a Mean Squared Error to compute our loss
 optimizer = torch.optim.SGD(model.parameters(), learning_parameter) # We use the Stochastic Gradient Descent from PyTorch to optimize our network
@@ -57,6 +58,7 @@ for epoch in range(epochs):
     else :
         model.train()
         for batch,(state,action) in enumerate(train_loader):
+            print(f'The current state is {state}.')
             inputs = Variable(state.float())
             labels = Variable(action.float())
             optimizer.zero_grad()
