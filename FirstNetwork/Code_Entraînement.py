@@ -11,12 +11,9 @@ from dataExtractor import TrajDataSet, DataAdjust
 
 frame = DataAdjust("trips_SV_2008_2015.csv") 
 train_d, test_d = frame.subset_data(45)
-std1 = [train_d.lon.std(),train_d.lat.std()]
-std2 = [test_d.lon.std(),test_d.lat.std()]
-col_coord = [-77.264,-11.773]
 #! Export in csv with pd.datafile.to_csv
-train_set = TrajDataSet(train_d,torchvision.transforms.Normalize(col_coord,std1)) # Creation of the train set
-test_set = TrajDataSet(test_d,torchvision.transforms.Normalize(col_coord,std2)) # Creation of the test 
+train_set = TrajDataSet(train_d) # Creation of the train set
+test_set = TrajDataSet(test_d) # Creation of the test 
 
 train_loader = torch.utils.data.DataLoader(train_set,batch_size=16,shuffle=True) # Creation of the train loader
 test_loader = torch.utils.data.DataLoader(test_set,batch_size=16,shuffle=True) # Creation of the test loader
@@ -39,33 +36,34 @@ train_losses = [] # This one will store the losses of each training epoch
 test_losses = [] # This one will store the losses of the testing epochs, every ten training epoch
 for epoch in range(epochs):
     print(f'We are at epoch {epoch}')
-    if epoch%5 == 0: # Every ten training epoch, we look the behavior of our network on the testing loader
-        model.eval()
-        with torch.no_grad():
-            for batch,(state,action) in enumerate(test_loader):
-                inputs = Variable(state.float())
-                labels = Variable(action.float())
-                optimizer.zero_grad()
-                outputs = model(inputs)
-                loss = criterion(outputs, labels)
-                # We could add a condition here to prevent from overfitting
-                history.append(loss.item())
-                # There is no optimisation here, we only look the behavior
-            test_losses.append(loss.item())
-    else :
-        model.train()
-        for batch,(state,action) in enumerate(train_loader):
+    #if epoch%5 == 0: # Every ten training epoch, we look the behavior of our network on the testing loader
+    model.eval()
+    with torch.no_grad():
+        for batch,(state,action) in enumerate(test_loader):
             inputs = Variable(state.float())
             labels = Variable(action.float())
             optimizer.zero_grad()
             outputs = model(inputs)
-            # Caution : gradients may be exploding because of two potential things : a too high l.p. or unnormalized inputs
             loss = criterion(outputs, labels)
+            # We could add a condition here to prevent from overfitting
             history.append(loss.item())
-            loss.backward()
-            optimizer.step()
-        train_losses.append(loss.item())
+            # There is no optimisation here, we only look the behavior
+        test_losses.append(loss.item())
+    #else :
+    model.train()
+    for batch,(state,action) in enumerate(train_loader):
+        inputs = Variable(state.float())
+        labels = Variable(action.float())
+        optimizer.zero_grad()
+        outputs = model(inputs)
+        # Caution : gradients may be exploding because of two potential things : a too high l.p. or unnormalized inputs
+        loss = criterion(outputs, labels)
+        history.append(loss.item())
+        loss.backward()
+        optimizer.step()
+    train_losses.append(loss.item())
 
+# torch.save() #! A voir
 ################################   RESULTS   ######################################
 
 # Printing the model parameters
@@ -87,7 +85,7 @@ plt.plot(x_test,y_test)
 plt.ylabel("Test loss")
 plt.xlabel("epoch")
 plt.suptitle("Evolution of our losses")
-plt.savefig("../img/firstLinearNetwork/Loss_Evolution_1.png")
+plt.savefig("Loss_Evolution_1.png")
 plt.show()
 #################   OTHER SOLUTION FOR THIS LINEAR REGRESSION   #################
 
