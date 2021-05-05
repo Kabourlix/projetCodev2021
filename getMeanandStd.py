@@ -1,2 +1,0 @@
-import dataExtractor as extr
-
