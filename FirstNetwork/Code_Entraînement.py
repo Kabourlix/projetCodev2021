@@ -69,6 +69,12 @@ for epoch in range(epochs):
                 history.append(loss.item())
             test_losses.append(loss.item())
 
+
+########### Saving the model ##################
+torch.save(model,'FirstNetwork/models/linear_noMemory.pt')
+###############################################
+
+
 # torch.save() #! A voir
 
 ################################   RESULTS   ######################################
@@ -86,7 +92,7 @@ plt.plot(x,y_test, color="blue",label="Test loss")
 plt.legend()
 plt.xlabel("Epoch")
 plt.title("Evolution of our losses")
-plt.savefig("Loss_Evolution_1.png")
+plt.savefig("FirstNetwork/img/Loss_Evolution_1.png")
 plt.show()
 
 #################   OTHER SOLUTION FOR THIS LINEAR REGRESSION   #################
