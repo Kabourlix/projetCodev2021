@@ -28,6 +28,7 @@ epochs = 10 # Number of episodes
 model = BehavioralCloning(state_dim, action_dim) # Importation of the network
 criterion = nn.MSELoss() # Here we choose a Mean Squared Error to compute our loss
 optimizer = torch.optim.SGD(model.parameters(), learning_parameter) # We use the Stochastic Gradient Descent from PyTorch to optimize our network
+nb_evaluation = 1
 
 #####################   TRAINING OF OUR NEURAL NETWORK   #########################
 
@@ -36,20 +37,21 @@ train_losses = [] # This one will store the losses of each training epoch
 test_losses = [] # This one will store the losses of the testing epochs, every ten training epoch
 for epoch in range(epochs):
     print(f'We are at epoch {epoch}')
-    #if epoch%5 == 0: # Every ten training epoch, we look the behavior of our network on the testing loader
-    model.eval()
-    with torch.no_grad():
-        for batch,(state,action) in enumerate(test_loader):
-            inputs = Variable(state.float())
-            labels = Variable(action.float())
-            optimizer.zero_grad()
-            outputs = model(inputs)
-            loss = criterion(outputs, labels)
-            # We could add a condition here to prevent from overfitting
-            history.append(loss.item())
-            # There is no optimisation here, we only look the behavior
-        test_losses.append(loss.item())
-    #else :
+    #Network evaluation (test loss)
+    if epoch%nb_evaluation == 0: # Every ten training epoch, we look the behavior of our network on the testing loader
+        model.eval()
+        with torch.no_grad():
+            for batch,(state,action) in enumerate(test_loader):
+                inputs = Variable(state.float())
+                labels = Variable(action.float())
+                optimizer.zero_grad()
+                outputs = model(inputs)
+                loss = criterion(outputs, labels)
+                # We could add a condition here to prevent from overfitting
+                history.append(loss.item())
+                # There is no optimisation here, we only look the behavior
+            test_losses.append(loss.item())
+    ### WE are training our network
     model.train()
     for batch,(state,action) in enumerate(train_loader):
         inputs = Variable(state.float())
