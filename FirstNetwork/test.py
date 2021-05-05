@@ -33,8 +33,8 @@ def normalize_action(action_state):
 state,action = next(iter(traj_data_loader)) #Here we got our tensors. inutile puisque seulement dans la boucle non ?
 state_dim = len(state) #! Here state and action are (2,1) it is juste coordinates : must be checked. 
 action_dim = len(action)
-model = network.BehavioralCloning(state_dim,action_dim) #! torch.load() à ajouter (penser à importer BehavioralCloning)
-torch.load(model,'models/linear_noMemory.pth')
+model = torch.load('FirstNetwork/models/linear_noMemory.pt')
+model.eval()
 
 time_step = traj_dataset.traj.shape[0]
 trajectory = [state.numpy()[0]] #It got the initial state
@@ -69,6 +69,7 @@ plt.plot(expert_traj[:,0],expert_traj[:,1],color='red')
 plt.scatter(col_coord[0],col_coord[1],color = 'green')
 plt.xlabel("x")
 plt.ylabel("y_expert")
-plt.savefig("trained_traj_1.png") #L'indice 1 se réfère au premier réseau. 
+plt.savefig("FirstNetwork/img/trained_traj_1.png") #L'indice 1 se réfère au premier réseau. 
+plt.show()
 
 #############################################################################
