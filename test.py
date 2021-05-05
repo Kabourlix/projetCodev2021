@@ -54,6 +54,7 @@ plt.subplot(212)
 plt.plot(expert_traj[:,0],expert_traj[:,1],color='red') #! It prints strange stuff : it doesn't seem to work properly
 plt.xlabel("x")
 plt.ylabel("y_expert")
+plt.suptitle("Comparison of our trajectories")
 plt.savefig("trained_traj.png")
 
 #############################################################################

@@ -83,11 +83,12 @@ x_test = [i for i in range(len(test_losses))]
 y_test = [loss for loss in test_losses]
 plt.subplot(211)
 plt.plot(x_train,y_train)
-plt.ylabel("Evolution of the train loss")
+plt.ylabel("Train loss")
 plt.subplot(212)
 plt.plot(x_test,y_test)
-plt.ylabel("Evolution of the test loss")
+plt.ylabel("Test loss")
 plt.xlabel("epoch")
+plt.suptitle("Evolution of our losses")
 plt.show()
 plt.savefig("Loss_Evolution.png")
 
