@@ -1,5 +1,4 @@
 ###############################   IMPORTATIONS   ################################
-
 import torch
 import torch.nn as nn
 import torchvision
@@ -10,7 +9,7 @@ from dataExtractor import TrajDataSet, DataAdjust
 
 ##########   INITIALISATION OF THE DATASETS AND THE DATALOADERS   ############### 
 
-frame = DataAdjust("../trips_SV_2008_2015.csv") 
+frame = DataAdjust("trips_SV_2008_2015.csv") 
 train_d, test_d = frame.subset_data(45)
 std1 = [train_d.lon.std(),train_d.lat.std()]
 std2 = [test_d.lon.std(),test_d.lat.std()]

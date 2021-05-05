@@ -7,7 +7,7 @@ import torch
 import torchvision
 import dataExtractor as extr
 import Code_Reseau as network
-personnal_data = extr.DataAdjust('../trips_SV_2008_2015.csv')
+personnal_data = extr.DataAdjust('trips_SV_2008_2015.csv')
 
 """
 The aim is to test our network by outputing a trajectory.
