@@ -53,10 +53,6 @@ class DataAdjust():
 	def temp(self):
 		return self.data
 
-	def get_mean(self):
-		return [data.lon.mean(),data.lat.mean()]
-	def get_std(self):
-		return [data.lon.std(),data.lat.std()]
 	def select_random_traj(self): #! Problem : we want to select a random trajectory from the untrained data
 		"""
 		Returns

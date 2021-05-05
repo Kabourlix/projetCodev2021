@@ -68,7 +68,6 @@ plt.plot(expert_traj[:,0],expert_traj[:,1],color='red')
 plt.scatter(col_coord[0],col_coord[1],color = 'green')
 plt.xlabel("x")
 plt.ylabel("y_expert")
-plt.suptitle("Comparison of our trajectories")
 plt.savefig("trained_traj.png")
 
 #############################################################################

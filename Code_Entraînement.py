@@ -24,8 +24,6 @@ test_loader = torch.utils.data.DataLoader(test_set,batch_size=16,shuffle=True) #
 
 ####################   INITIALISATION OF THE VARIABLES   ########################## 
 
-def perso_export():
-    return test_d
 
 state_dim = 2600
 action_dim = 2600
