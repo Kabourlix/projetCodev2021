@@ -82,29 +82,4 @@ class DataAdjust():
 		data_2 = self.data[~mask].copy()
 		return (data_1,data_2)
 
-#######################   FINAL VARIABLE TO DEAL WITH   #################################
-
-personnal_data = DataAdjust('trips_SV_2008_2015.csv') #Global variable to extract once our data in a dataFrame. 
-
-#########################   SLICING OF THE DATASET   #################################
-
-# data = TrajDataSet('trips_SV_2008_2015') #Import dataset
-
-# #Create trip labels
-# trip_label = data['trip']
-# trip_label.drop_duplicates(keep='first',inplace=True)
-# nb_label = trip_label.shape()[0]
-
-# def select_random_traj(dataSet, )
-
-#Création du dataset
-#data = pd.read_csv("trips_SV_2008_2015.csv")
-#traj_data = []
-#traj_idx = data.trip[0]
-#i=0
-#while i<len(data) and data.trip[i]== traj_idx:
-#    traj_data.append([data.lon[i],data.lat[i],data.step_speed[i],data.step_direction[i]])
-#    i+=1
-#traj_data_np = np.array(traj_data)
-
 

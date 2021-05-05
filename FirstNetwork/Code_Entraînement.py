@@ -10,7 +10,7 @@ from dataExtractor import TrajDataSet, DataAdjust
 
 ##########   INITIALISATION OF THE DATASETS AND THE DATALOADERS   ############### 
 
-frame = DataAdjust("trips_SV_2008_2015.csv") 
+frame = DataAdjust("../trips_SV_2008_2015.csv") 
 train_d, test_d = frame.subset_data(45)
 std1 = [train_d.lon.std(),train_d.lat.std()]
 std2 = [test_d.lon.std(),test_d.lat.std()]
@@ -88,7 +88,7 @@ plt.plot(x_test,y_test)
 plt.ylabel("Test loss")
 plt.xlabel("epoch")
 plt.suptitle("Evolution of our losses")
-plt.savefig("img/firstLinearNetwork/Loss_Evolution.png")
+plt.savefig("../img/firstLinearNetwork/Loss_Evolution_1.png")
 plt.show()
 #################   OTHER SOLUTION FOR THIS LINEAR REGRESSION   #################
 

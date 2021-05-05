@@ -7,7 +7,7 @@ import torch
 import torchvision
 import dataExtractor as extr
 import Code_Reseau as network
-personnal_data = extr.DataAdjust('trips_SV_2008_2015.csv')
+personnal_data = extr.DataAdjust('../trips_SV_2008_2015.csv')
 
 """
 The aim is to test our network by outputing a trajectory.
@@ -68,6 +68,6 @@ plt.plot(expert_traj[:,0],expert_traj[:,1],color='red')
 plt.scatter(col_coord[0],col_coord[1],color = 'green')
 plt.xlabel("x")
 plt.ylabel("y_expert")
-plt.savefig("img/firstLinearNetwork/trained_traj.png")
+plt.savefig("../img/firstLinearNetwork/trained_traj_1.png") #L'indice 1 se réfère au premier réseau. 
 
 #############################################################################
