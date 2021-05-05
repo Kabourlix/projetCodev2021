@@ -65,6 +65,12 @@ for epoch in range(epochs):
         optimizer.step()
     train_losses.append(loss.item())
 
+
+########### Saving the model ##################
+torch.save(model,'models/linear_noMemory.pth')
+###############################################
+
+
 # torch.save() #! A voir
 ################################   RESULTS   ######################################
 

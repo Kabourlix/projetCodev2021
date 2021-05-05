@@ -34,6 +34,8 @@ state,action = next(iter(traj_data_loader)) #Here we got our tensors. inutile pu
 state_dim = len(state) #! Here state and action are (2,1) it is juste coordinates : must be checked. 
 action_dim = len(action)
 model = network.BehavioralCloning(state_dim,action_dim) #! torch.load() à ajouter (penser à importer BehavioralCloning)
+torch.load(model,'models/linear_noMemory.pth')
+
 time_step = traj_dataset.traj.shape[0]
 trajectory = [state.numpy()[0]] #It got the initial state
 
