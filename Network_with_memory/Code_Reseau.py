@@ -10,7 +10,9 @@ class BehavioralCloning(nn.Module):
     def __init__(self, state_dim, action_dim):
         super(BehavioralCloning,self).__init__() # Here we only use a single linear layer
         self.linear = nn.Sequential(nn.Linear(2,100),nn.Linear(100,100),nn.Linear(100,2)) # The tensor dimensions have to match
-        
+    # To change : with the memory, we'll now have a 2*m shaped tensor, where m is the memory we want to use
+    # We thus have to change the parameters of nn.Linear in order to respect the new shape        
+
 
     # Choice of the operations within our network
     def forward(self,x):

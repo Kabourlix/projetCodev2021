@@ -1,4 +1,5 @@
 ###############################   IMPORTATIONS   ################################
+
 import torch
 import torch.nn as nn
 import torchvision
@@ -73,9 +74,6 @@ for epoch in range(epochs):
 ########### Saving the model ##################
 torch.save(model,'FirstNetwork/models/linear_noMemory.pt')
 ###############################################
-
-
-# torch.save() #! A voir
 
 ################################   RESULTS   ######################################
 
