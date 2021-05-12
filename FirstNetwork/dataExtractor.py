@@ -37,19 +37,45 @@ class DataAdjust():
 	"""
 	This class enables to deal with our data. 
 	"""
-	def __init__(self,file_name,label_name = 'trip',drop_label = ['dive','prediction'],method=pd.read_csv):
+	def __init__(self,file_name,label_name = 'trip',drop_label = ['datetime','dive','prediction'],method=pd.read_csv):
 		#Import the data in dataFrame.
 		self.data = method(file_name) #Init our data frame.
 		self.data.drop(drop_label,axis=1,inplace=True) #We delete the useless columns for our work. 
+  
+  
 		
-		#Label series (in our context it is the trips' names.)
+		################################################## Labels of the trips ###################################
+		#Label series (in our context it is the trips' names)
 		self.label = self.data.loc[:,label_name].copy() #Init our label serie
 		self.label.drop_duplicates(keep='first',inplace=True) #Eliminate copies. 
 		self.nb_label = self.label.shape[0] #Ammount of labels
 		
-		#We make the label name an attribute of our class to make it more readable. 
+		#Access the label in the methods of our class 
 		self.label_name = label_name
+		###########################################################################################################
+  
+		self.colony = [-77.264,-11.773] #Coordinates of the colony.  
+
+		################################ STD DATA FRAME ################################
+
+		mask = ['lon','lat','step_speed','step_direction']
 		
+		#            Init our std_df and make the first series concatenation (we have particules columns label so we do it out of the loop)
+		self.std_df = self.data.loc(self.data.trip == self.label.iloc[0],mask).std()
+		temp = self.data.loc(self.data.trip == self.label.iloc[1],mask).std()
+		self.std_df = pd.concat([self.std_df,temp],axis = 1)
+		self.std_df.rename(columns={0 : self.label.iloc[0], 1 : self.label.iloc[1]},inplace = True)
+  
+
+		#                                 We go through the label to get the std of each trip
+		for idx in range(2,self.nb_label):
+			temp = self.data.loc(self.data.trip == self.label.iloc[idx],mask).std() # We get a serie with index (lon,lat,...)
+			self.std_df = pd.concat([self.std_df,temp],axis=1) #We concatenate with the previous ones found, the label of the series added is 0
+			self.std_df.rename(columns={0 : self.label.iloc[idx]},inplace = True) #We change its label to the trip's name associated
+		
+  
+  		self.std_df = self.std_df.swapaxes(0,1) #When the loop is over, we swap axes to have the trips in index.
+		#################################################################################
 	def temp(self):
 		return self.data
 
