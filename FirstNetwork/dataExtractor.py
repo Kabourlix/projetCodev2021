@@ -115,7 +115,7 @@ class DataAdjust():
 		norm_function = lambda s : (s-self.colony)/self.std_df.iloc[trip_name,:]
 		self.data.loc[self.data.trip == trip_name,:].map(norm_function,na_action = 'ignore') #This normalize inplace our dataframe for a specified trajectory.
 	
-	def subset_data(self,first_ammount,data1_filename,data2_filename):
+	def subset_data(self,data1_filename,data2_filename,first_ammount = int(self.nb_label*0.7)):
 		"""
 		This function subset our data into two data frame. It is aimed at splitting our data in two : one for training and the other for testing.  
 		!This function should save the subset dataFrame into a csv to reuse them later. 
@@ -138,7 +138,10 @@ class DataAdjust():
 		# We save our dataFrame on the hardDrive.
 		data_1.to_csv(data1_filename,index=False)
 		data_2.to_csv(data2_filename,index=False)
-		
+
 		return (data_1,data_2)
 
 
+if __name__ == __main__:
+	df = DataAdjust('data/trips_SV_2008_2015.csv')
+	df.subset_data("data/train_data.csv", "data/test_data.csv") #This save the two dataFrame in a csv we will reuse in train
