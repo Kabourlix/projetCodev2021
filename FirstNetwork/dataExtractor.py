@@ -56,6 +56,7 @@ class DataAdjust():
 		self.label = self.data.loc[:,label_name].copy() #Init our label serie
 		self.label.drop_duplicates(keep='first',inplace=True) #Eliminate copies. 
 		self.nb_label = self.label.shape[0] #Ammount of labels
+		print(self.nb_label)
 		
 		#Access the label in the methods of our class 
 		self.label_name = label_name
@@ -68,15 +69,15 @@ class DataAdjust():
 		mask = ['lon','lat','step_speed','step_direction']
 		
 		#            Init our std_df and make the first series concatenation (we have particules columns label so we do it out of the loop)
-		self.std_df = self.data.loc(self.data.trip == self.label.iloc[0],mask).std()
-		temp = self.data.loc(self.data.trip == self.label.iloc[1],mask).std()
+		self.std_df = self.data.loc[self.data['trip'] == self.label.iloc[0],mask].std()
+		temp = self.data.loc[self.data.trip == self.label.iloc[1],mask].std()
 		self.std_df = pd.concat([self.std_df,temp],axis = 1)
 		self.std_df.rename(columns={0 : self.label.iloc[0], 1 : self.label.iloc[1]},inplace = True)
   
 
 		#                                 We go through the label to get the std of each trip
 		for idx in range(2,self.nb_label):
-			temp = self.data.loc(self.data.trip == self.label.iloc[idx],mask).std() # We get a serie with index (lon,lat,...)
+			temp = self.data.loc[self.data.trip == self.label.iloc[idx],mask].std() # We get a serie with index (lon,lat,...)
 			self.std_df = pd.concat([self.std_df,temp],axis=1) #We concatenate with the previous ones found, the label of the series added is 0
 			self.std_df.rename(columns={0 : self.label.iloc[idx]},inplace = True) #We change its label to the trip's name associated
 		
@@ -87,6 +88,8 @@ class DataAdjust():
 		# trip_name ...
 		#################################################################################
 
+	def temp(self):
+		return self.std_df
 	def select_random_traj(self): #! Problem : we want to select a random trajectory from the untrained data
 		"""
 		Returns
@@ -103,7 +106,7 @@ class DataAdjust():
 			This function normalizes our inputs. For a trajectory j, any coordinate [x,y] becomes [(x-colony_x)/std_j, (y-colony_y)/std_j] : ([x,y] - colony)/std_j
   		"""
 		for trip_label in self.label:
-			normalize_traj(trip_label) #We normalize each trajectory
+			self.normalize_traj(trip_label) #We normalize each trajectory
 
 	def normalize_traj(self,trip_name):
 		"""
@@ -112,10 +115,12 @@ class DataAdjust():
 			--------
 			trip_name : str. This is the label of the trajectory we want to normalize. 
         """ 
-		norm_function = lambda s : (s-self.colony)/self.std_df.iloc[trip_name,:]
-		self.data.loc[self.data.trip == trip_name,:].map(norm_function,na_action = 'ignore') #This normalize inplace our dataframe for a specified trajectory.
+		self.data.loc[self.data.trip == trip_name,'lon'].map(lambda s : (s-self.colony[0])/self.std_df.loc[trip_name,'lon'])
+		self.data.loc[self.data.trip == trip_name,'lat'].map(lambda s : (s-self.colony[1])/self.std_df.loc[trip_name,'lat'])
+		self.data.loc[self.data.trip == trip_name,'step_speed'].map(lambda s : s/self.std_df.loc[trip_name,'step_speed'])
+		self.data.loc[self.data.trip == trip_name,'step_direction'].map(lambda s : s/self.std_df.loc[trip_name,'step_direction'])
 	
-	def subset_data(self,data1_filename,data2_filename,first_ammount = int(self.nb_label*0.7)):
+	def subset_data(self,data1_filename,data2_filename,first_ammount = 45):
 		"""
 		This function subset our data into two data frame. It is aimed at splitting our data in two : one for training and the other for testing.  
 		!This function should save the subset dataFrame into a csv to reuse them later. 
@@ -142,6 +147,7 @@ class DataAdjust():
 		return (data_1,data_2)
 
 
-if __name__ == __main__:
+if __name__ == '__main__':
 	df = DataAdjust('data/trips_SV_2008_2015.csv')
+	df.normalize() #We normalize the data
 	df.subset_data("data/train_data.csv", "data/test_data.csv") #This save the two dataFrame in a csv we will reuse in train
