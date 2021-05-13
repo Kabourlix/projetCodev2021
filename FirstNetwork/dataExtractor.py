@@ -36,6 +36,13 @@ class TrajDataSet(torch.utils.data.Dataset):
 class DataAdjust():
 	"""
 	This class enables to deal with our data. 
+	Here is how to use it. 
+	First, create an instance with your raw data : my_data = DataAdjust("my_data.csv")
+	If you want to normalize your data, do this : my_data.normalize()
+	For training a network, subset your data : my_data.subset_data(ammount_in_first_data,"train_data.csv","test_data.csv")
+ 
+	Then, for training, do as follow. 
+	trained_data = DataAdjust("train_data.csv")
 	"""
 	def __init__(self,file_name,label_name = 'trip',drop_label = ['datetime','dive','prediction'],method=pd.read_csv):
 		#Import the data in dataFrame.
@@ -74,10 +81,11 @@ class DataAdjust():
 			self.std_df.rename(columns={0 : self.label.iloc[idx]},inplace = True) #We change its label to the trip's name associated
 		
   
-  		self.std_df = self.std_df.swapaxes(0,1) #When the loop is over, we swap axes to have the trips in index.
+		self.std_df = self.std_df.swapaxes(0,1) #When the loop is over, we swap axes to have the trips in index.
+		#self.std_df has the following structure
+		# index  lon_std lat_std step_speed_std step_direction_std
+		# trip_name ...
 		#################################################################################
-	def temp(self):
-		return self.data
 
 	def select_random_traj(self): #! Problem : we want to select a random trajectory from the untrained data
 		"""
@@ -88,14 +96,34 @@ class DataAdjust():
 
 		"""
 		return self.data[self.data[self.label_name] == self.label.sample().iloc[0]]
-		#return selected_data[selected_data[self.label_name] == self.label.sample().iloc[0]]
-		#TODO : Adjust this so as to make the selected traj in the test one. 
-	
-	def subset_data(self,first_ammount):
+		#return selected_data[selected_data[self.label_name] == self.label.sample().iloc[0]] 
+  
+	def normalize(self):
 		"""
+			This function normalizes our inputs. For a trajectory j, any coordinate [x,y] becomes [(x-colony_x)/std_j, (y-colony_y)/std_j] : ([x,y] - colony)/std_j
+  		"""
+		for trip_label in self.label:
+			normalize_traj(trip_label) #We normalize each trajectory
+
+	def normalize_traj(self,trip_name):
+		"""
+			This function normalize one trajectory at a time. It is done inplace.
+			Parameters 
+			--------
+			trip_name : str. This is the label of the trajectory we want to normalize. 
+        """ 
+		norm_function = lambda s : (s-self.colony)/self.std_df.iloc[trip_name,:]
+		self.data.loc[self.data.trip == trip_name,:].map(norm_function,na_action = 'ignore') #This normalize inplace our dataframe for a specified trajectory.
+	
+	def subset_data(self,first_ammount,data1_filename,data2_filename):
+		"""
+		This function subset our data into two data frame. It is aimed at splitting our data in two : one for training and the other for testing.  
+		!This function should save the subset dataFrame into a csv to reuse them later. 
 		Parameters
 		-------
 		first_ammount : int. This is the ammount of trajectories you want int he first dataframe to extract. 
+		data1_filename : str. It is the filename of the csv that will contain the split. 
+		data2_filename : str. Same with the second dataframe. 
 
 		Returns 
 		------
@@ -106,6 +134,11 @@ class DataAdjust():
 		mask = self.data[self.label_name].isin(extract_labels)
 		data_1 = self.data[mask].copy()
 		data_2 = self.data[~mask].copy()
+
+		# We save our dataFrame on the hardDrive.
+		data_1.to_csv(data1_filename,index=False)
+		data_2.to_csv(data2_filename,index=False)
+		
 		return (data_1,data_2)
 
 
