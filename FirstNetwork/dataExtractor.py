@@ -44,10 +44,11 @@ class DataAdjust():
 	Then, for training, do as follow. 
 	trained_data = DataAdjust("train_data.csv")
 	"""
-	def __init__(self,file_name,label_name = 'trip',drop_label = ['datetime','dive','prediction'],method=pd.read_csv):
+	def __init__(self,file_name,drop = True,label_name = 'trip',drop_label = ['datetime','dive','prediction'],method=pd.read_csv):
 		#Import the data in dataFrame.
 		self.data = method(file_name) #Init our data frame.
-		self.data.drop(drop_label,axis=1,inplace=True) #We delete the useless columns for our work. 
+		if drop:
+			self.data.drop(drop_label,axis=1,inplace=True) #We delete the useless columns for our work. 
   
   
 		
@@ -87,7 +88,8 @@ class DataAdjust():
 		# index  lon_std lat_std step_speed_std step_direction_std
 		# trip_name ...
 		#################################################################################
-
+	def get_data_Frame(self):
+		return self.data
 	def temp(self):
 		return self.std_df
 	def select_random_traj(self): #! Problem : we want to select a random trajectory from the untrained data
