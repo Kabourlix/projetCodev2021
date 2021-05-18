@@ -147,7 +147,7 @@ class DataAdjust():
 		data_2.to_csv(data2_filename,index=False)
 
 		return (data_1,data_2)
-
+ 
 
 if __name__ == '__main__':
 	df = DataAdjust('data/trips_SV_2008_2015.csv')

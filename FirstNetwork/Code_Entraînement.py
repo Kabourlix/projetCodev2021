@@ -81,8 +81,6 @@ torch.save(model,'FirstNetwork/models/linear_noMemory.pt')
 ###############################################
 
 
-# torch.save() #! A voir
-
 ################################   RESULTS   ######################################
 
 # Printing the model parameters
