@@ -1,5 +1,4 @@
 ###############################   IMPORTATIONS   ################################
-
 import torch
 import torch.nn as nn
 import torchvision
@@ -10,11 +9,17 @@ from dataExtractor import TrajDataSet, DataAdjust
 
 ##########   INITIALISATION OF THE DATASETS AND THE DATALOADERS   ############### 
 
-frame = DataAdjust("trips_SV_2008_2015.csv") 
-train_d, test_d = frame.subset_data(45)
-#! Export in csv with pd.datafile.to_csv
-train_set = TrajDataSet(train_d) # Creation of the train set
-test_set = TrajDataSet(test_d) # Creation of the test 
+#frame = DataAdjust("trips_SV_2008_2015.csv") 
+#train_d, test_d = frame.subset_data(45)
+#Importing data
+train_d = DataAdjust("data/train_data.csv",drop=False)
+test_d = DataAdjust("data/test_data.csv",drop=False)
+
+#Transform them in Data Set
+train_set = TrajDataSet(train_d.get_data_Frame()) # Creation of the train set
+test_set = TrajDataSet(test_d.get_data_Frame()) # Creation of the test 
+
+#Make them dataLoader
 train_loader = torch.utils.data.DataLoader(train_set,batch_size=16,shuffle=True) # Creation of the train loader
 test_loader = torch.utils.data.DataLoader(test_set,batch_size=16,shuffle=True) # Creation of the test loader
 
@@ -74,6 +79,7 @@ for epoch in range(epochs):
 ########### Saving the model ##################
 torch.save(model,'FirstNetwork/models/linear_noMemory.pt')
 ###############################################
+
 
 ################################   RESULTS   ######################################
 

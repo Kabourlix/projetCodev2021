@@ -7,7 +7,9 @@ import torch
 import torchvision
 import dataExtractor as extr
 import Code_Reseau as network
-personnal_data = extr.DataAdjust('trips_SV_2008_2015.csv')
+
+#We import the test data Frame. 
+personnal_data = extr.DataAdjust('data/test_data.csv',drop=False)
 
 """
 The aim is to test our network by outputing a trajectory.
@@ -17,16 +19,11 @@ where x is the lenght of the expert trajectory associated
 #Importing one random trajectory to plot it
 col_coord = [-77.264,-11.773]
 
-traj_data = personnal_data.select_random_traj() #TODO : Modify this line later when it would be edited in dataExtractor.py 
+traj_data = personnal_data.select_random_traj()  #Random traj
 traj_dataset = extr.TrajDataSet(traj_data)
 traj_data_loader = torch.utils.data.DataLoader(traj_dataset,batch_size=1,shuffle=False)
 
 
-def normalize_action(action_state):
-    """
-    action_state = [lon,lat]
-    """
-    return (action_state - col_coord)/std
 
 ######################   INITIALISATION OF THE VARIABLES   #################################
 
@@ -51,7 +48,7 @@ for iteration in range(time_step-1):
     ######################
     mult = r*np.array([np.cos(theta),np.sin(theta)]) # [r cos(theta),r sin(theta)], real and imaginary part ouf our velocity (R + i I)
     next_state += mult #Calculate next state.
-    #next_state = normalize_action(next_state)
+
     trajectory.append(next_state[0].copy()) #Add it to the trajectory list
     state = torch.from_numpy(next_state) # Modify state value for next loop
 
