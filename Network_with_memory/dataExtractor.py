@@ -26,11 +26,14 @@ class TrajDataSet(torch.utils.data.Dataset):
 	def __len__(self):
 		return len(self.traj) + 1 - self.memory
 
+	def get_traj(self):
+		return self.traj
+
 	def __getitem__(self,idx):
 		"""
 		This function return the idx-th pairs state/action of the array as a tensor. 
 		"""
-		return (torch.from_numpy(self.traj[idx:idx+self.memory][:2]),torch.from_numpy(self.traj[idx:idx+self.memory][2:])) #We output a tuple of tensor (state,action)
+		return (torch.from_numpy(self.traj[idx:idx+self.memory,:2]),torch.from_numpy(self.traj[idx:idx+self.memory,2:])) #We output a tuple of tensor (state,action)
 		#I've got an unexpected error where torch.from_numpy is not recognized by my python interpreter (in VisualCode), don't know why. 
 
 #######################   MANIPULATION OF OUR DATASET   #################################
