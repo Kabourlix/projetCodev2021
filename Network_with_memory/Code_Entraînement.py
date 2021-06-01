@@ -12,8 +12,8 @@ from dataExtractor import TrajDataSet, DataAdjust
 #frame = DataAdjust("trips_SV_2008_2015.csv") 
 #train_d, test_d = frame.subset_data(45)
 #Importing data
-train_d = DataAdjust("data/train_data.csv",drop=False)
-test_d = DataAdjust("data/test_data.csv",drop=False)
+train_d = DataAdjust("data/train_data_memory.csv",drop=False)
+test_d = DataAdjust("data/test_data_memory.csv",drop=False)
 
 #Transform them in Data Set
 train_set = TrajDataSet(train_d.get_data_Frame()) # Creation of the train set

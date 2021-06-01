@@ -158,8 +158,5 @@ if __name__ == '__main__':
 	df = DataAdjust('data/trips_SV_2008_2015.csv')
 	df.normalize() #We normalize the data
 	a,b = df.subset_data("data/train_data_memory.csv", "data/test_data_memory.csv") #This save the two dataFrame in a csv we will reuse in train
-	test = TrajDataSet(a,mem_nb=3)
-	test_loader = torch.utils.data.DataLoader(test,batch_size=1,shuffle=True)
-	state = next(iter(test_loader))
-	print(f'Voici notre état {state} ainsi que sa shape.') #! On obtient pas le bon objet voulue, il faudrait regarder sur internet.
+	
 	
