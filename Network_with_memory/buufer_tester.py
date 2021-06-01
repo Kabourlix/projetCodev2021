@@ -17,7 +17,8 @@ print('Avant les test.')
 couche = torch.nn.Linear(2, 2)
 
 (state,action) = next(iter(test_loader))
+action = couche.forward(state.float())
 
 output = couche(state.float())
-
+print(state.numpy()[0][0])
 print('Test réussi')

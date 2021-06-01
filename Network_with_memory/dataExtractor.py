@@ -105,9 +105,17 @@ class DataAdjust():
 			This returns a dataFrame form of a unique trajectory
 
 		"""
-		return self.data[self.data[self.label_name] == self.label.sample().iloc[0]]
+		random_label = self.label.sample().iloc[0]
+		return (self.data[self.data[self.label_name] == random_label],random_label)
 		#return selected_data[selected_data[self.label_name] == self.label.sample().iloc[0]] 
-  
+	#def unormalized(self,label):
+	#	"""
+	#		This function "un"normalized a trajectory -> useful for plotting and comparison
+	#	"""
+	#	traj = self.data[self.data[self.label_name] == random_label]
+	#	traj.lon.map(lambda s : (s+self.colony[0])*self.std_df.loc[label,'lon'])
+	#	traj.lat.map(lambda s : (s+self.colony[1])*self.std_df.loc[label,'lat'])
+	#	return traj.loc[:,[['lon','lat']]
 	def normalize(self):
 		"""
 			This function normalizes our inputs. For a trajectory j, any coordinate [x,y] becomes [(x-colony_x)/std_j, (y-colony_y)/std_j] : ([x,y] - colony)/std_j
