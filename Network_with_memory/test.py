@@ -8,6 +8,15 @@ import torchvision
 import dataExtractor as extr
 import Code_Reseau as network
 
+def unormalized(traj,data_obj,label):
+    """
+        Traj is a (n,2) np.ndarray. 
+        we output a denormalized traj
+    """
+    traj[:,0] = (traj[:,0]+col_coord[0])*data_ob.td_df.loc[label,'lon']
+    traj[:,1] = (traj[:,1]+col_coord[1])*data_ob.td_df.loc[label,'lat']
+
+
 def action_to_state(ac_tensor,current_state):
     """
         This function is aimed at transforming an action in a state to put inside the model. 
@@ -58,7 +67,7 @@ traj_data_loader = torch.utils.data.DataLoader(traj_dataset,batch_size=1,shuffle
 state,action = next(iter(traj_data_loader)) #Here we got our tensors. inutile puisque seulement dans la boucle non ?
 state_dim = len(state) #! Here state and action are (2,1) it is juste coordinates : must be checked. 
 action_dim = len(action)
-model = torch.load('FirstNetwork/models/linear_noMemory.pt')
+model = torch.load('FirstNetwork/models/linear_Memory.pt')
 model.eval()
 
 time_step = traj_dataset.traj.shape[0]
@@ -81,6 +90,7 @@ for iteration in range(time_step-1):
 ###########################   PRINTING TRAJECTORIES   ######################################
 print(f'Après l_algo, voilà la traj {trajectory}')
 trajectory = np.array(trajectory)
+#unormalized(trajectory,personnal_data,rd_data)
 expert_traj = traj_dataset.traj[:,0:2]
 print(f'Expert traj : {expert_traj}')
 plt.subplot(211)
@@ -94,6 +104,11 @@ plt.scatter(col_coord[0],col_coord[1],color = 'green')
 plt.xlabel("x")
 plt.ylabel("y_expert")
 plt.savefig("FirstNetwork/img/trained_traj_1.png") #L'indice 1 se réfère au premier réseau. 
+plt.show()
+
+plt.figure()
+plt.plot(trajectory[:,0],trajectory[:,1])
+plt.scatter(col_coord[0],col_coord[1],color = 'red')
 plt.show()
 
 #############################################################################

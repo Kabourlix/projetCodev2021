@@ -16,8 +16,8 @@ train_d = DataAdjust("data/train_data_memory.csv",drop=False)
 test_d = DataAdjust("data/test_data_memory.csv",drop=False)
 
 #Transform them in Data Set
-train_set = TrajDataSet(train_d.get_data_Frame()) # Creation of the train set
-test_set = TrajDataSet(test_d.get_data_Frame()) # Creation of the test 
+train_set = TrajDataSet(train_d.get_data_Frame(),mem_nb=10) # Creation of the train set
+test_set = TrajDataSet(test_d.get_data_Frame(),mem_nb=10) # Creation of the test 
 
 #Make them dataLoader
 train_loader = torch.utils.data.DataLoader(train_set,batch_size=16,shuffle=True) # Creation of the train loader
@@ -27,8 +27,8 @@ test_loader = torch.utils.data.DataLoader(test_set,batch_size=16,shuffle=True) #
 
 state_dim = 2600
 action_dim = 2600
-learning_parameter = 0.00001 # We want to keep it small to prevent gradient explosions
-epochs = 5 # Number of episodes
+learning_parameter = 0.00002 # We want to keep it small to prevent gradient explosions
+epochs = 20 # Number of episodes
 model = BehavioralCloning(state_dim, action_dim) # Importation of the network
 criterion = nn.MSELoss() # Here we choose a Mean Squared Error to compute our loss
 optimizer = torch.optim.SGD(model.parameters(), learning_parameter) # We use the Stochastic Gradient Descent from PyTorch to optimize our network
@@ -74,10 +74,12 @@ for epoch in range(epochs):
                 loss = criterion(outputs, labels)
                 history.append(loss.item())
             test_losses.append(loss.item())
+    if (train_losses[-1] < 100):
+        break
 
 
 ########### Saving the model ##################
-torch.save(model,'FirstNetwork/models/linear_noMemory.pt')
+torch.save(model,'FirstNetwork/models/linear_Memory.pt') 
 ###############################################
 
 
