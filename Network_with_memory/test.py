@@ -26,7 +26,7 @@ def action_to_state(ac_tensor,current_state):
         Returns :
             - next_state : np.array of shape (nb_mem,2). This is the state one step forward. It need treatment before becoming a new model input. 
     """
-    ac_np = ac_tensor.detach().numpy()[0] #We get [r,theta]
+    ac_np = ac_tensor.detach().numpy() #We get [r,theta]
     next_state = current_state.numpy() #Prepare the next step for manipulation
     #For lisibility, we write the exponential form ouf our action's velocity vector
     #print(f' action : {ac_np}')
@@ -57,7 +57,7 @@ traj_data,rd_data = personnal_data.select_random_traj()  #Random traj
 #traj_data,rd_label = personnal_data.select_random_traj()  #Random traj
 #expert_traj = personnal_data.unormalized(rd_label) #We get the random traj without normalization for plotting down below.
 # ! I must check this. There is still some errors.  
-traj_dataset = extr.TrajDataSet(traj_data)
+traj_dataset = extr.TrajDataSet(traj_data,mem_nb = 10)
 traj_data_loader = torch.utils.data.DataLoader(traj_dataset,batch_size=1,shuffle=False)
 
 
@@ -65,8 +65,7 @@ traj_data_loader = torch.utils.data.DataLoader(traj_dataset,batch_size=1,shuffle
 ######################   INITIALISATION OF THE VARIABLES   #################################
 
 state,action = next(iter(traj_data_loader)) #Here we got our tensors. inutile puisque seulement dans la boucle non ?
-state_dim = len(state) #! Here state and action are (2,1) it is juste coordinates : must be checked. 
-action_dim = len(action)
+
 model = torch.load('FirstNetwork/models/linear_Memory.pt')
 model.eval()
 
@@ -77,7 +76,7 @@ trajectory = state.numpy()[0] #It got the initial state (The three first one)
 ####################################   LOOP   ######################################
 
 for iteration in range(time_step-1):
-    next_action = model.forward(state.float()) # Get the next action : here it is torch.tensor([a_i,a_{i+1},a_{i+2}]) where a_j = [.,.]
+    next_action = model.forward_for_plot(state.float()) # Get the next action : here it is torch.tensor([a_i,a_{i+1},a_{i+2}]) where a_j = [.,.]
     next_state = action_to_state(next_action,state)
     #print(f'Next_state[0][-1] vaut {next_state[0][-1]}')
     trajectory = np.append(trajectory,next_state[0][-1].copy()) #Add it to the trajectory list, only the last one since the other are already in it.

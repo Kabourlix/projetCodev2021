@@ -7,19 +7,21 @@ import torch.nn as nn
 class BehavioralCloning(nn.Module):
 
     # Definition of the network
-    def __init__(self, state_dim, action_dim):
+    def __init__(self,nb_mem,batch_size = 16):
         super(BehavioralCloning,self).__init__() # Here we only use a single linear layer
-        self.linear = nn.Sequential(nn.Linear(2,100),nn.Linear(100,100),nn.Linear(100,2)) # The tensor dimensions have to match
-    # To change : with the memory, we'll now have a 2*m shaped tensor, where m is the memory we want to use
-    # We thus have to change the parameters of nn.Linear in order to respect the new shape        
-
+        self.nb_mem = nb_mem
+        self.batch_size = batch_size
+        self.linear = nn.Sequential(nn.Linear(2*self.nb_mem,100),nn.Linear(100,100),nn.Linear(100,2*self.nb_mem))   
+        #We have hte input as 2 features * nb of element in the group
 
     # Choice of the operations within our network
     def forward(self,x):
-        #! Redimensionner : x.resize(1,nb_mem*2)
-        # self.linear
-        # -> resize(nb_mem,2)
-        return self.linear(x) # We only return the linear transformation of the input tensor
+        # Put the resized input in the model 
+        output = self.linear(x.resize(self.batch_size,1,self.nb_mem*2))
+        return output.resize(self.batch_size,self.nb_mem,2) # Return the resized output (convenient for plotting trajectories and comparison)
+    def forward_for_plot(self,x):
+        output = self.linear(x.resize(1,2*self.nb_mem))
+        return output.resize(self.nb_mem,2)
 
 
 #################   OTHER SOLUTION FOR THIS LINEAR REGRESSION   #################

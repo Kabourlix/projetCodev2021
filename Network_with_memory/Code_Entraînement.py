@@ -15,21 +15,27 @@ from dataExtractor import TrajDataSet, DataAdjust
 train_d = DataAdjust("data/train_data_memory.csv",drop=False)
 test_d = DataAdjust("data/test_data_memory.csv",drop=False)
 
+memory = 10
+batch = 16
+
 #Transform them in Data Set
-train_set = TrajDataSet(train_d.get_data_Frame(),mem_nb=10) # Creation of the train set
-test_set = TrajDataSet(test_d.get_data_Frame(),mem_nb=10) # Creation of the test 
+train_set = TrajDataSet(train_d.get_data_Frame(),mem_nb=memory) # Creation of the train set
+test_set = TrajDataSet(test_d.get_data_Frame(),mem_nb=memory) # Creation of the test 
 
 #Make them dataLoader
-train_loader = torch.utils.data.DataLoader(train_set,batch_size=16,shuffle=True) # Creation of the train loader
-test_loader = torch.utils.data.DataLoader(test_set,batch_size=16,shuffle=True) # Creation of the test loader
+train_loader = torch.utils.data.DataLoader(train_set,batch_size=batch,shuffle=True) # Creation of the train loader
+test_loader = torch.utils.data.DataLoader(test_set,batch_size=batch,shuffle=True) # Creation of the test loader
 
+state,action = next(iter(train_loader))
+
+print(f'The first state is {state} of size {state.size()}.')
+b = state.resize(1,2*batch*memory)
+print(f'THe resized is {b} of size {b.size()}.')
 ####################   INITIALISATION OF THE VARIABLES   ########################## 
 
-state_dim = 2600
-action_dim = 2600
-learning_parameter = 0.00002 # We want to keep it small to prevent gradient explosions
+learning_parameter = 0.00001 # We want to keep it small to prevent gradient explosions
 epochs = 20 # Number of episodes
-model = BehavioralCloning(state_dim, action_dim) # Importation of the network
+model = BehavioralCloning(memory,batch) # Importation of the network
 criterion = nn.MSELoss() # Here we choose a Mean Squared Error to compute our loss
 optimizer = torch.optim.SGD(model.parameters(), learning_parameter) # We use the Stochastic Gradient Descent from PyTorch to optimize our network
 nb_evaluation = 1 # This parameter choses the number of evaluations we want for n epochs
@@ -43,36 +49,40 @@ for epoch in range(epochs):
     print(f'We are at epoch {epoch}')
     # Here we train our network 
     model.train() # instruction to train
-    for batch,(state,action) in enumerate(train_loader):
-        inputs = Variable(state.float())
-        labels = Variable(action.float())
-        optimizer.zero_grad()
-        outputs = model(inputs)
-        # Caution : gradients may be exploding because of two potential things : a too high l.p. or unnormalized inputs
-        loss = criterion(outputs, labels)
-        loss.backward()
-        optimizer.step()
+    for r_batch,(state,action) in enumerate(train_loader):
+        if r_batch == batch:
+            inputs = Variable(state.float())
+            #print(f'Voici nos inputs {inputs}')
+            labels = Variable(action.float())
+            optimizer.zero_grad()
+            outputs = model(inputs )
+            # Caution : gradients may be exploding because of two potential things : a too high l.p. or unnormalized inputs
+            loss = criterion(outputs, labels)
+            loss.backward()
+            optimizer.step()
     # Here we test our network with the train loader and the test loader, apart from the training part
     if epoch%nb_evaluation == 0: # Every nb_evaluation epoch, we look the behavior of our network on the two loaders
         model.eval()
         with torch.no_grad():
             # Testing on the train loader
-            for batch,(state,action) in enumerate(train_loader):
-                inputs = Variable(state.float())
-                labels = Variable(action.float())
-                optimizer.zero_grad()
-                outputs = model(inputs)
-                loss = criterion(outputs, labels)
-                history.append(loss.item())
+            for r_batch,(state,action) in enumerate(train_loader):
+                if r_batch == batch:
+                    inputs = Variable(state.float())
+                    labels = Variable(action.float())
+                    optimizer.zero_grad()
+                    outputs = model(inputs)
+                    loss = criterion(outputs, labels)
+                    history.append(loss.item())
             train_losses.append(loss.item())
             # Testing on the test loader
-            for batch,(state,action) in enumerate(test_loader):
-                inputs = Variable(state.float())
-                labels = Variable(action.float())
-                optimizer.zero_grad()
-                outputs = model(inputs)
-                loss = criterion(outputs, labels)
-                history.append(loss.item())
+            for r_batch,(state,action) in enumerate(test_loader):
+                if r_batch == batch:
+                    inputs = Variable(state.float())
+                    labels = Variable(action.float())
+                    optimizer.zero_grad()
+                    outputs = model(inputs)
+                    loss = criterion(outputs, labels)
+                    history.append(loss.item())
             test_losses.append(loss.item())
     if (train_losses[-1] < 100):
         break
