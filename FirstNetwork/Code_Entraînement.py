@@ -28,7 +28,7 @@ test_loader = torch.utils.data.DataLoader(test_set,batch_size=16,shuffle=True) #
 state_dim = 2600
 action_dim = 2600
 learning_parameter = 0.00001 # We want to keep it small to prevent gradient explosions
-epochs = 5 # Number of episodes
+epochs = 20 # Number of episodes
 model = BehavioralCloning(state_dim, action_dim) # Importation of the network
 criterion = nn.MSELoss() # Here we choose a Mean Squared Error to compute our loss
 optimizer = torch.optim.SGD(model.parameters(), learning_parameter) # We use the Stochastic Gradient Descent from PyTorch to optimize our network
