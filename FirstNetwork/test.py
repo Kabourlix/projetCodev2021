@@ -30,7 +30,7 @@ traj_data_loader = torch.utils.data.DataLoader(traj_dataset,batch_size=1,shuffle
 state,action = next(iter(traj_data_loader)) #Here we got our tensors. inutile puisque seulement dans la boucle non ?
 state_dim = len(state) #! Here state and action are (2,1) it is juste coordinates : must be checked. 
 action_dim = len(action)
-model = torch.load('FirstNetwork/models/linear_noMemory.pt')
+model = torch.load('models/linear_noMemory.pt')
 model.eval()
 
 time_step = traj_dataset.traj.shape[0]
@@ -66,7 +66,7 @@ plt.plot(expert_traj[:,0],expert_traj[:,1],color='red')
 plt.scatter(col_coord[0],col_coord[1],color = 'green')
 plt.xlabel("x")
 plt.ylabel("y_expert")
-plt.savefig("FirstNetwork/img/trained_traj_1.png") #L'indice 1 se réfère au premier réseau. 
+plt.savefig("img/trained_traj_noMemory.png") #L'indice 1 se réfère au premier réseau. 
 plt.show()
 
 #############################################################################

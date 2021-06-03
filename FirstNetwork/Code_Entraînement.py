@@ -77,7 +77,7 @@ for epoch in range(epochs):
 
 
 ########### Saving the model ##################
-torch.save(model,'FirstNetwork/models/linear_noMemory.pt')
+torch.save(model,'models/linear_noMemory.pt')
 ###############################################
 
 
@@ -96,7 +96,7 @@ plt.plot(x,y_test, color="blue",label="Test loss")
 plt.legend()
 plt.xlabel("Epoch")
 plt.title("Evolution of our losses")
-plt.savefig("FirstNetwork/img/Loss_Evolution_1.png")
+plt.savefig("img/Loss_Evolution_noMemory.png")
 plt.show()
 
 #################   OTHER SOLUTION FOR THIS LINEAR REGRESSION   #################
