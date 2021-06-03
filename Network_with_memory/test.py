@@ -106,6 +106,8 @@ plt.ylabel("y_expert")
 plt.savefig("FirstNetwork/img/trained_traj_1.png") #L'indice 1 se réfère au premier réseau. 
 plt.show()
 
+#Rajouter un plt.scatter
+
 plt.figure()
 plt.plot(trajectory[:,0],trajectory[:,1])
 plt.scatter(col_coord[0],col_coord[1],color = 'red')

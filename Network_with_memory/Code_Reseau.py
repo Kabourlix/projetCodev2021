@@ -16,6 +16,9 @@ class BehavioralCloning(nn.Module):
 
     # Choice of the operations within our network
     def forward(self,x):
+        #! Redimensionner : x.resize(1,nb_mem*2)
+        # self.linear
+        # -> resize(nb_mem,2)
         return self.linear(x) # We only return the linear transformation of the input tensor
 
 

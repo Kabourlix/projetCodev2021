@@ -132,8 +132,8 @@ class DataAdjust():
         """ 
 		self.data.loc[self.data.trip == trip_name,'lon'].map(lambda s : (s-self.colony[0])/self.std_df.loc[trip_name,'lon'])
 		self.data.loc[self.data.trip == trip_name,'lat'].map(lambda s : (s-self.colony[1])/self.std_df.loc[trip_name,'lat'])
-		self.data.loc[self.data.trip == trip_name,'step_speed'].map(lambda s : s/self.std_df.loc[trip_name,'step_speed'])
-		self.data.loc[self.data.trip == trip_name,'step_direction'].map(lambda s : s/self.std_df.loc[trip_name,'step_direction'])
+		self.data.loc[self.data.trip == trip_name,'step_speed'].map(lambda s : s/self.std_df.loc[trip_name,'step_speed']) #Teser /gros nb -> [0,1]
+		self.data.loc[self.data.trip == trip_name,'step_direction'].map(lambda s : s/self.std_df.loc[trip_name,'step_direction']) #Teser /gros nb -> [0,1]
 	
 	def subset_data(self,data1_filename,data2_filename,first_ammount = 45):
 		"""
