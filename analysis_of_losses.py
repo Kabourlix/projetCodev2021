@@ -16,7 +16,7 @@ class Loss_stat :
     This class provides statistics on a a given loss list. 
     A loss list is the given loss for a certain number of epochs repeated x times.
     """
-    def __init__(self,filename='train_losses.csv',list_name = 'train',model_name = 'linearNoMem',repetition = 20,nb_epoch = 15):
+    def __init__(self,filename='train_losses.csv',list_name = 'train',model_name = 'linearNoMem',repetition = 60,nb_epoch = 15):
         loss_list = pd.read_csv(filename).to_numpy() #We read the csv and convert it to numpy.
         #Init of our attributes
         self.min_list = []
@@ -36,12 +36,12 @@ class Loss_stat :
             This method plot loss calculated (x-axis unit is arbitrary)
         """
         #x = [k for k in range(self.rep)]
-        loss = self.min_list[:,0]//200 #For clarity
+        loss = self.min_list[:,0]//100 #For clarity
         #plt.plot(x,self.min_list[:,0])
         plt.hist(loss,density=True)
         plt.xlabel(self.list_name + '_loss')
         plt.ylabel('Frequency')
-        plt.xticks(range(6),[x*200 for x in range(6)])
+        plt.xticks(range(12),[x*100 for x in range(12)])
         plt.title('Distribution of '+self.list_name+'_loss ('+str(self.rep)+' iterations)')
         plt.savefig('img/stats/'+self.list_name+'_lossFrequency_'+self.model_name+'.png')
         plt.show()
