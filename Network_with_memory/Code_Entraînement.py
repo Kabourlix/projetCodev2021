@@ -107,7 +107,7 @@ plt.plot(x,y_train, color="red",label="Train loss")
 plt.plot(x,y_test, color="blue",label="Test loss")
 plt.legend()
 plt.xlabel("Epoch")
-plt.title("Evolution of our losses")
+plt.title("Evolution of our losses (Group coord)")
 plt.savefig("img/Loss_Evolution_linear_memory.png")
 plt.show()
 
