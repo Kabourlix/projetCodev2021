@@ -9,7 +9,7 @@ from dataExtractor import TrajDataSet, DataAdjust
 import pandas as pd
 import numpy as np
 
-def train(): 
+def train(single = False): 
     ##########   INITIALISATION OF THE DATASETS AND THE DATALOADERS   ############### 
 
     #frame = DataAdjust("trips_SV_2008_2015.csv") 
@@ -89,28 +89,30 @@ def train():
 
 
     ########### Saving the model ##################
-    #torch.save(model,'models/linear_Memory.pt') 
-    # ! Je le commente pour faire mes stats 
+    if single:
+        torch.save(model,'models/linear_Memory.pt') 
+     
     ###############################################
 
 
     ################################   RESULTS   ######################################
-
-    # Printing the model parameters
-    #!print(model.parameters())
-    #!print(test_losses)
-    # Printing the evolution of the loss
-    #!plt.clf()
-    #!x = [i for i in range(len(train_losses))]
     y_train = [loss for loss in train_losses]
     y_test = [loss for loss in test_losses]
-    #!plt.plot(x,y_train, color="red",label="Train loss")
-    #!plt.plot(x,y_test, color="blue",label="Test loss")
-    #!plt.legend()
-    #!plt.xlabel("Epoch")
-    #!plt.title("Evolution of our losses (Group coord)")
-    #!plt.savefig("img/Loss_Evolution_linear_memory.png")
-    #!plt.show()
+    if single:
+        # Printing the model parameters
+        print(model.parameters())
+        print(test_losses)
+        # Printing the evolution of the loss
+        plt.clf()
+        x = [i for i in range(len(train_losses))]
+    
+        plt.plot(x,y_train, color="red",label="Train loss")
+        plt.plot(x,y_test, color="blue",label="Test loss")
+        plt.legend()
+        plt.xlabel("Epoch")
+        plt.title("Evolution of our losses (Group coord)")
+        plt.savefig("img/Loss_Evolution_linear_memory.png")
+        plt.show()
 
     return y_train,y_test
 
