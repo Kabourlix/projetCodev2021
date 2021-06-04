@@ -6,7 +6,9 @@ from torch.autograd import Variable
 import matplotlib.pyplot as plt
 from Code_Reseau import BehavioralCloning
 from dataExtractor import TrajDataSet, DataAdjust
-<<<<<<< HEAD
+import pandas as pd
+import numpy as np
+
 def train(single = False):
     ##########   INITIALISATION OF THE DATASETS AND THE DATALOADERS   ############### 
 
@@ -102,7 +104,7 @@ def train(single = False):
         plt.title("Evolution of our losses (Single Coord)")
         plt.savefig("img/Loss_Evolution_noMemory.png")
         plt.show()
-    return y_train,_y_test
+    return y_train,y_test
 
 if __name__ == "__main__":
     for iteration in range(60):
@@ -111,26 +113,3 @@ if __name__ == "__main__":
         pd.DataFrame(np.array(a)).to_csv('data/train_losses_Linear_NoMemory.csv',sep = ',',mode='a')
         pd.DataFrame(np.array(b)).to_csv('test_losses_losses_Linear_NoMemory.csv',sep = ',',mode='a')
         print('Les données sont enregistrées')
-
-#################   OTHER SOLUTION FOR THIS LINEAR REGRESSION   #################
-
-#def evaluate(model, val_loader):
-#    outputs = [model.validation_step(batch) for batch in val_loader]
-#    return model.validation_epoch_end(outputs)
-
-#def fit(epochs, learning_parameter, model, train_loader, val_loader, opt_function = torch.optim.SGD)
-#    history = []
-#    optimizer = opt_function(model.parameters(), learning_parameter)
-#    for epoch in range(epochs):
-#        # Phase d'entraînement
-#        for batch in train_loader:
-#            loss = model.training_step(batch)
-#            loss.backward()
-#            optimizer.step()
-#            optimizer.zero_grad()
-#        # Phase de validation
-#        result = evaluate(model,val_loader)
-#        model.epoch_end(epoch, result, epochs)
-#        history.append(result)
-#    return history
-
