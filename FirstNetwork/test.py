@@ -71,4 +71,14 @@ plt.ylabel("y_expert")
 plt.savefig("img/trained_traj_noMemory.png") #L'indice 1 se réfère au premier réseau. 
 plt.show()
 
+
+plt.figure()
+plt.plot(expert_traj[:,0],expert_traj[:,1],color='red')
+plt.scatter(col_coord[0],col_coord[1],color = 'green')
+plt.xlabel("x")
+plt.ylabel("y_expert")
+plt.title('Exemple de trajectoire des oiseaux marins')
+plt.savefig('exempleTraj.png')
+plt.show()
+
 #############################################################################

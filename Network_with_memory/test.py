@@ -95,22 +95,22 @@ print(f'Expert traj : {expert_traj}')
 plt.subplot(211)
 plt.plot(trajectory[:,0],trajectory[:,1])
 plt.scatter(col_coord[0],col_coord[1],color = 'red')
-
+plt.title('Trajectory (Group coord)')
 plt.ylabel("y_trained")
 plt.subplot(212)
 plt.plot(expert_traj[:,0],expert_traj[:,1],color='red')
 plt.scatter(col_coord[0],col_coord[1],color = 'green')
 plt.xlabel("x")
 plt.ylabel("y_expert")
-plt.title('Trajectory (Group coord)')
+
 plt.savefig("img/trained_traj_linear_memory.png") #L'indice 1 se réfère au premier réseau. 
 plt.show()
 
 #Rajouter un plt.scatter
 
-plt.figure()
-plt.plot(trajectory[:,0],trajectory[:,1])
-plt.scatter(col_coord[0],col_coord[1],color = 'red')
-plt.show()
+#plt.figure()
+#plt.plot(trajectory[:,0],trajectory[:,1])
+#plt.scatter(col_coord[0],col_coord[1],color = 'red')
+#plt.show()
 
 #############################################################################
